@@ -12,7 +12,7 @@ const App = ({ router }: AppProps): React.ReactElement => {
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-      <Toaster />
+      <Toaster richColors theme="light" />
     </QueryClientProvider>
   );
 };
