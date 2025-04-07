@@ -62,7 +62,6 @@ const CreateSurveyBtn = () => {
     mutation.mutate({
       name: values.name,
       description: values.description as string,
-      user_id: session.user.id,
     });
   };
 
