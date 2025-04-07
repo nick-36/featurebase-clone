@@ -1,11 +1,11 @@
 import { useRef } from "react";
-import supabase from "@/config/supabaseClient";
 import SurveyCard from "./surveyCard";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import CreateSurveyBtn from "./createSurvey";
 import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/queryClient";
+import { getSurveys } from "@/services/surveyService";
 
 export const SurveyCardSkeleton = () => {
   return (
@@ -25,13 +25,6 @@ export const SurveyCardSkeleton = () => {
   );
 };
 
-const fetchSurveys = async () => {
-  const { data, error } = await supabase.from("forms").select("*");
-
-  if (error) throw new Error(error.message);
-  return data;
-};
-
 const SurveyList = () => {
   const createSurveyRef = useRef<HTMLDivElement | null>(null);
   const {
@@ -41,7 +34,7 @@ const SurveyList = () => {
     error,
   } = useQuery({
     queryKey: queryKeys.surveys.all,
-    queryFn: fetchSurveys,
+    queryFn: getSurveys,
   });
 
   if (isLoading) {
@@ -58,6 +51,7 @@ const SurveyList = () => {
       </div>
     );
   }
+
   if (error)
     return <p className="text-center text-red-500">Error: {isError}</p>;
 
@@ -73,6 +67,7 @@ const SurveyList = () => {
         <CreateSurveyBtn />
         {surveys.map((survey) => (
           <SurveyCard
+            key={survey.id}
             id={survey.id}
             name={survey.name}
             description={survey.description}
