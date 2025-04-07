@@ -11,7 +11,7 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, FilePlus } from "lucide-react";
 
 import {
   Form,
@@ -24,15 +24,18 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { FilePlus } from "lucide-react";
 import { formSchema, formSchemaType } from "@/lib/validation/surveyForm";
 import { toast } from "sonner";
-import supabase from "@/config/supabaseClient";
 import { useSession } from "@/stores/authStore";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/lib/queryClient";
+import { createSurvey } from "@/services/surveyService";
 
 const CreateSurveyBtn = () => {
   const [open, setOpen] = useState(false);
   const { session } = useSession();
+  const queryClient = useQueryClient();
+
   const form = useForm<formSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,34 +44,32 @@ const CreateSurveyBtn = () => {
     },
   });
 
-  const onSubmit = async (values: formSchemaType) => {
-    try {
-      const { error } = await supabase.from("forms").insert([
-        {
-          name: values.name,
-          description: values.description,
-          created_at: new Date().toISOString(), // Ensure timestamp is stored correctly
-          user_id: session?.user?.id, // Store user ID if authentication is enabled
-        },
-      ]);
-
-      if (error) {
-        throw error;
-      }
-
+  const mutation = useMutation({
+    mutationFn: createSurvey,
+    onSuccess: () => {
       toast.success("New survey created successfully!");
+      queryClient.invalidateQueries({ queryKey: queryKeys.surveys.all });
       setOpen(false);
       form.reset();
-    } catch (error) {
-      console.error("Survey creation error:", error);
+    },
+    onError: () => {
       toast.error("Something went wrong! Please try again.");
-    }
+    },
+  });
+
+  const onSubmit = (values: formSchemaType) => {
+    if (!session?.user?.id) return toast.error("User not logged in");
+    mutation.mutate({
+      name: values.name,
+      description: values.description as string,
+      user_id: session.user.id,
+    });
   };
 
   return (
     <Dialog modal={true} open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="group bg-background border border-primary/50 flex flex-col justify-center items-center hover:border-primary hover:cursor-pointer border-dashed gap-4 rounded-md">
+        <div className="min-h-[200px] group bg-background border border-primary/50 flex flex-col justify-center items-center hover:border-primary hover:cursor-pointer border-dashed gap-4 rounded-md p-4">
           <FilePlus className="w-8 h-8 text-foreground group-hover:text-primary" />
           <p className="text-foreground font-bold text-xl group-hover:text-primary">
             Create New Survey
@@ -120,12 +121,9 @@ const CreateSurveyBtn = () => {
               )}
             />
             <DialogFooter>
-              <Button
-                disabled={form.formState.isSubmitting}
-                className="w-full mt-4"
-              >
-                {!form.formState.isSubmitting && <span>Save</span>}
-                {form.formState.isSubmitting && (
+              <Button disabled={mutation.isPending} className="w-full mt-4">
+                {!mutation.isPending && <span>Save</span>}
+                {mutation.isPending && (
                   <LoaderCircle className="animate-spin" />
                 )}
               </Button>

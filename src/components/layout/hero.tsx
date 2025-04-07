@@ -14,7 +14,7 @@ const Hero = () => {
           el.scrollIntoView({ behavior: "smooth" });
         }
       } else {
-        navigate({ to: "/" }); // We'll scroll once the user lands
+        navigate({ to: "/" });
       }
     } else {
       navigate({ to: "/auth/login", search: { redirectTo: "/" } });
