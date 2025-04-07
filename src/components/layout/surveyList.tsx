@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import supabase from "@/config/supabaseClient";
 import SurveyCard from "./surveyCard";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import CreateSurveyBtn from "./createSurvey";
+import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "@/lib/queryClient";
 
 export const SurveyCardSkeleton = () => {
   return (
@@ -23,35 +25,30 @@ export const SurveyCardSkeleton = () => {
   );
 };
 
+const fetchSurveys = async () => {
+  const { data, error } = await supabase.from("forms").select("*");
+
+  if (error) throw new Error(error.message);
+  return data;
+};
+
 const SurveyList = () => {
-  const [surveys, setSurveys] = useState<Survey[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const createSurveyRef = useRef<HTMLDivElement | null>(null);
+  const {
+    data: surveys = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: queryKeys.surveys.all,
+    queryFn: fetchSurveys,
+  });
 
-  useEffect(() => {
-    const fetchSurveys = async () => {
-      try {
-        const { data, error } = await supabase.from("forms").select("*");
-
-        if (error) throw error;
-        setSurveys(data);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSurveys();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="mx-auto mt-8 p-4">
         <h2 className="text-2xl font-extrabold text-left mb-6">All Surveys</h2>
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Render multiple skeleton cards while loading */}
           {Array(4)
             .fill(0)
             .map((_, index) => (
@@ -61,7 +58,8 @@ const SurveyList = () => {
       </div>
     );
   }
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
+  if (error)
+    return <p className="text-center text-red-500">Error: {isError}</p>;
 
   return (
     <div
@@ -70,26 +68,21 @@ const SurveyList = () => {
       id="create-survey-section"
     >
       <h2 className="text-2xl font-extrabold text-left mb-6">All Surveys</h2>
-      {surveys.length === 0 ? (
-        <p className="text-center text-gray-500">
-          No surveys available. Create one!
-        </p>
-      ) : (
-        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-          <CreateSurveyBtn />
-          {surveys.map((survey) => (
-            <SurveyCard
-              id={survey.id}
-              name={survey.name}
-              description={survey.description}
-              shareURL={survey.share_url}
-              createdAt={survey.created_at}
-              responseCount={survey.submissions}
-              isPublished={survey.published}
-            />
-          ))}
-        </ul>
-      )}
+
+      <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+        <CreateSurveyBtn />
+        {surveys.map((survey) => (
+          <SurveyCard
+            id={survey.id}
+            name={survey.name}
+            description={survey.description}
+            shareURL={survey.share_url}
+            createdAt={survey.created_at}
+            responseCount={survey.submissions}
+            isPublished={survey.published}
+          />
+        ))}
+      </ul>
     </div>
   );
 };

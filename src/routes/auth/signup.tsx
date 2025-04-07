@@ -30,7 +30,6 @@ export const Route = createFileRoute("/auth/signup")({
   context: () => ({
     header: {
       showAuthButtons: false,
-      showCreateSurvey: false,
     },
   }),
 });

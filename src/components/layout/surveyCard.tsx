@@ -10,6 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Share2, Pencil } from "lucide-react";
+import { Route as SurveyDetailRoute } from "@/routes/surveys/$surveyId";
+import { Route as SurveysSurveyIdBuilderRoute } from "@/routes/surveys/$surveyId/builder";
+import { toast } from "sonner";
 
 type SurveyCardProps = {
   id: string;
@@ -31,15 +34,15 @@ const SurveyCard: React.FC<SurveyCardProps> = ({
   responseCount,
 }) => {
   const handleShare = () => {
-    const url = `${window.location.origin}/survey/${shareURL}`;
+    const url = `${import.meta.env.VITE_FRONTEND_DEV_URL}/submit/${shareURL}`;
     navigator.clipboard.writeText(url);
-    alert("Survey URL copied to clipboard!");
+    toast.success("Survey URL copied to clipboard!");
   };
 
   return (
     <Card
-      className="w-full transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.01]
-      bg-gradient-to-br from-blue-50 via-white to-blue-100 border border-blue-200/50"
+      className="w-full min-h-[200px] transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.01]
+      bg-gradient-to-br from-blue-50 via-white to-blue-100 border border-blue-200/50 pb-0"
     >
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
@@ -63,9 +66,9 @@ const SurveyCard: React.FC<SurveyCardProps> = ({
           {description || "No description provided."}
         </CardDescription>
       </CardHeader>
-      <CardContent className="border-t pt-3">
-        <div className="flex justify-between">
-          <div className="flex items-center text-xs text-muted-foreground">
+      <CardContent className="border-t pt-3 h-full">
+        <div className="flex items-center justify-between h-full">
+          <div className="flex items-center text-xs text-muted-foreground ">
             <div>
               Created on {new Date(createdAt).toLocaleDateString()} |{" "}
               {responseCount} response{responseCount !== 1 ? "s" : ""}
@@ -79,7 +82,7 @@ const SurveyCard: React.FC<SurveyCardProps> = ({
               asChild
             >
               <Link
-                to={`/survey/$surveyId`}
+                to={SurveyDetailRoute.to}
                 params={{
                   surveyId: id,
                 }}
@@ -90,10 +93,8 @@ const SurveyCard: React.FC<SurveyCardProps> = ({
             {!isPublished && (
               <Button variant="outline" size="sm" asChild>
                 <Link
-                  to={`/survey/$surveyId/builder`}
-                  params={{
-                    surveyId: id,
-                  }}
+                  to={SurveysSurveyIdBuilderRoute.to}
+                  params={{ surveyId: id }}
                 >
                   <Pencil className="w-4 h-4 cursor-pointer" />
                 </Link>

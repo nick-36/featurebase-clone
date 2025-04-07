@@ -11,7 +11,7 @@ export const router = createRouter({
   context: {
     header: {
       showAuthButtons: true,
-      showCreateSurvey: true,
+      hideHeader: false,
     },
   } as AppRouteContext,
 });

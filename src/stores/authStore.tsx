@@ -4,7 +4,6 @@ import supabase from "@/config/supabaseClient";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient, queryKeys } from "@/lib/queryClient";
 
-
 interface AuthResult {
   success: boolean;
   data?: any;
@@ -38,8 +37,6 @@ const initializeAuth = async () => {
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log("🔁 Auth change:", event, !!session);
-
         if (event === "SIGNED_OUT" || !session) {
           useAuthStore.getState().setSession(null);
         } else {
@@ -54,7 +51,7 @@ const initializeAuth = async () => {
       authListener.subscription.unsubscribe();
     };
   } catch (error) {
-    console.error("⚠️ Error initializing auth:", error);
+    console.error("Error initializing auth:", error);
     useAuthStore.getState().setSession(null);
     useAuthStore.getState().setLoading(false);
     return () => {};
@@ -140,11 +137,11 @@ export function useSignOut() {
       return true;
     },
     onSuccess: () => {
-      console.log("✅ Sign-out success");
+      console.log("Sign-out success");
       useAuthStore.getState().setSession(null);
     },
     onError: (error) => {
-      console.error("⚠️ Sign-out error:", error);
+      console.error("Sign-out error:", error);
       useAuthStore.getState().setSession(null);
     },
     onSettled: () => {
