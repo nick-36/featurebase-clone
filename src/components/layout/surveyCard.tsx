@@ -10,8 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Share2, Pencil } from "lucide-react";
-import { Route as SurveyDetailRoute } from "@/routes/surveys/$surveyId";
-import { Route as SurveysSurveyIdBuilderRoute } from "@/routes/surveys/$surveyId/builder";
 import { toast } from "sonner";
 
 type SurveyCardProps = {
@@ -82,7 +80,7 @@ const SurveyCard: React.FC<SurveyCardProps> = ({
               asChild
             >
               <Link
-                to={SurveyDetailRoute.to}
+                to="/surveys/$surveyId"
                 params={{
                   surveyId: id,
                 }}
@@ -92,10 +90,7 @@ const SurveyCard: React.FC<SurveyCardProps> = ({
             </Button>
             {!isPublished && (
               <Button variant="outline" size="sm" asChild>
-                <Link
-                  to={SurveysSurveyIdBuilderRoute.to}
-                  params={{ surveyId: id }}
-                >
+                <Link to="/surveys/$surveyId/builder" params={{ surveyId: id }}>
                   <Pencil className="w-4 h-4 cursor-pointer" />
                 </Link>
               </Button>
