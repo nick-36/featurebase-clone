@@ -12,14 +12,10 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as NotFoundImport } from './routes/notFound'
-import { Route as CreateSurveyImport } from './routes/create-survey'
 import { Route as IndexImport } from './routes/index'
-import { Route as SubmitSurveyUrlImport } from './routes/submit/$surveyUrl'
 import { Route as AuthSignupImport } from './routes/auth/signup'
 import { Route as AuthLoginImport } from './routes/auth/login'
 import { Route as SurveysSurveyIdIndexImport } from './routes/surveys/$surveyId/index'
-import { Route as SurveysSurveyIdResultsImport } from './routes/surveys/$surveyId/results'
-import { Route as SurveysSurveyIdBuilderImport } from './routes/surveys/$surveyId/builder'
 
 // Create/Update Routes
 
@@ -29,21 +25,9 @@ const NotFoundRoute = NotFoundImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const CreateSurveyRoute = CreateSurveyImport.update({
-  id: '/create-survey',
-  path: '/create-survey',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const SubmitSurveyUrlRoute = SubmitSurveyUrlImport.update({
-  id: '/submit/$surveyUrl',
-  path: '/submit/$surveyUrl',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -65,18 +49,6 @@ const SurveysSurveyIdIndexRoute = SurveysSurveyIdIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const SurveysSurveyIdResultsRoute = SurveysSurveyIdResultsImport.update({
-  id: '/surveys/$surveyId/results',
-  path: '/surveys/$surveyId/results',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const SurveysSurveyIdBuilderRoute = SurveysSurveyIdBuilderImport.update({
-  id: '/surveys/$surveyId/builder',
-  path: '/surveys/$surveyId/builder',
-  getParentRoute: () => rootRoute,
-} as any)
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -86,13 +58,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/create-survey': {
-      id: '/create-survey'
-      path: '/create-survey'
-      fullPath: '/create-survey'
-      preLoaderRoute: typeof CreateSurveyImport
       parentRoute: typeof rootRoute
     }
     '/notFound': {
@@ -116,27 +81,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignupImport
       parentRoute: typeof rootRoute
     }
-    '/submit/$surveyUrl': {
-      id: '/submit/$surveyUrl'
-      path: '/submit/$surveyUrl'
-      fullPath: '/submit/$surveyUrl'
-      preLoaderRoute: typeof SubmitSurveyUrlImport
-      parentRoute: typeof rootRoute
-    }
-    '/surveys/$surveyId/builder': {
-      id: '/surveys/$surveyId/builder'
-      path: '/surveys/$surveyId/builder'
-      fullPath: '/surveys/$surveyId/builder'
-      preLoaderRoute: typeof SurveysSurveyIdBuilderImport
-      parentRoute: typeof rootRoute
-    }
-    '/surveys/$surveyId/results': {
-      id: '/surveys/$surveyId/results'
-      path: '/surveys/$surveyId/results'
-      fullPath: '/surveys/$surveyId/results'
-      preLoaderRoute: typeof SurveysSurveyIdResultsImport
-      parentRoute: typeof rootRoute
-    }
     '/surveys/$surveyId/': {
       id: '/surveys/$surveyId/'
       path: '/surveys/$surveyId'
@@ -151,38 +95,26 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/create-survey': typeof CreateSurveyRoute
   '/notFound': typeof NotFoundRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
-  '/submit/$surveyUrl': typeof SubmitSurveyUrlRoute
-  '/surveys/$surveyId/builder': typeof SurveysSurveyIdBuilderRoute
-  '/surveys/$surveyId/results': typeof SurveysSurveyIdResultsRoute
   '/surveys/$surveyId': typeof SurveysSurveyIdIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/create-survey': typeof CreateSurveyRoute
   '/notFound': typeof NotFoundRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
-  '/submit/$surveyUrl': typeof SubmitSurveyUrlRoute
-  '/surveys/$surveyId/builder': typeof SurveysSurveyIdBuilderRoute
-  '/surveys/$surveyId/results': typeof SurveysSurveyIdResultsRoute
   '/surveys/$surveyId': typeof SurveysSurveyIdIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/create-survey': typeof CreateSurveyRoute
   '/notFound': typeof NotFoundRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
-  '/submit/$surveyUrl': typeof SubmitSurveyUrlRoute
-  '/surveys/$surveyId/builder': typeof SurveysSurveyIdBuilderRoute
-  '/surveys/$surveyId/results': typeof SurveysSurveyIdResultsRoute
   '/surveys/$surveyId/': typeof SurveysSurveyIdIndexRoute
 }
 
@@ -190,60 +122,35 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/create-survey'
     | '/notFound'
     | '/auth/login'
     | '/auth/signup'
-    | '/submit/$surveyUrl'
-    | '/surveys/$surveyId/builder'
-    | '/surveys/$surveyId/results'
     | '/surveys/$surveyId'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/create-survey'
-    | '/notFound'
-    | '/auth/login'
-    | '/auth/signup'
-    | '/submit/$surveyUrl'
-    | '/surveys/$surveyId/builder'
-    | '/surveys/$surveyId/results'
-    | '/surveys/$surveyId'
+  to: '/' | '/notFound' | '/auth/login' | '/auth/signup' | '/surveys/$surveyId'
   id:
     | '__root__'
     | '/'
-    | '/create-survey'
     | '/notFound'
     | '/auth/login'
     | '/auth/signup'
-    | '/submit/$surveyUrl'
-    | '/surveys/$surveyId/builder'
-    | '/surveys/$surveyId/results'
     | '/surveys/$surveyId/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CreateSurveyRoute: typeof CreateSurveyRoute
   NotFoundRoute: typeof NotFoundRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthSignupRoute: typeof AuthSignupRoute
-  SubmitSurveyUrlRoute: typeof SubmitSurveyUrlRoute
-  SurveysSurveyIdBuilderRoute: typeof SurveysSurveyIdBuilderRoute
-  SurveysSurveyIdResultsRoute: typeof SurveysSurveyIdResultsRoute
   SurveysSurveyIdIndexRoute: typeof SurveysSurveyIdIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CreateSurveyRoute: CreateSurveyRoute,
   NotFoundRoute: NotFoundRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthSignupRoute: AuthSignupRoute,
-  SubmitSurveyUrlRoute: SubmitSurveyUrlRoute,
-  SurveysSurveyIdBuilderRoute: SurveysSurveyIdBuilderRoute,
-  SurveysSurveyIdResultsRoute: SurveysSurveyIdResultsRoute,
   SurveysSurveyIdIndexRoute: SurveysSurveyIdIndexRoute,
 }
 
@@ -258,21 +165,14 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/create-survey",
         "/notFound",
         "/auth/login",
         "/auth/signup",
-        "/submit/$surveyUrl",
-        "/surveys/$surveyId/builder",
-        "/surveys/$surveyId/results",
         "/surveys/$surveyId/"
       ]
     },
     "/": {
       "filePath": "index.tsx"
-    },
-    "/create-survey": {
-      "filePath": "create-survey.tsx"
     },
     "/notFound": {
       "filePath": "notFound.tsx"
@@ -282,15 +182,6 @@ export const routeTree = rootRoute
     },
     "/auth/signup": {
       "filePath": "auth/signup.tsx"
-    },
-    "/submit/$surveyUrl": {
-      "filePath": "submit/$surveyUrl.tsx"
-    },
-    "/surveys/$surveyId/builder": {
-      "filePath": "surveys/$surveyId/builder.tsx"
-    },
-    "/surveys/$surveyId/results": {
-      "filePath": "surveys/$surveyId/results.tsx"
     },
     "/surveys/$surveyId/": {
       "filePath": "surveys/$surveyId/index.tsx"
