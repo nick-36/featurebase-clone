@@ -32,3 +32,11 @@ export const isQuestionElement = (
 ): type is keyof typeof QuestionElement => {
   return Object.values(QuestionElement).includes(type as QuestionElement);
 };
+
+export const getBaseURL = () => {
+  if (import.meta.env.MODE === "development")
+    return import.meta.env.VITE_FRONTEND_DEV_URL;
+  if (import.meta.env.MODE === "production")
+    return import.meta.env.VITE_FRONTEND_PROD_URL;
+  return import.meta.env.VITE_FRONTEND_PREVIEW_URL;
+};

@@ -11,6 +11,7 @@ import { Link } from "@tanstack/react-router";
 import { Share2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { getBaseURL } from "@/lib/utils";
 
 type SurveyCardProps = {
   id: string;
@@ -32,7 +33,7 @@ const SurveyCard: React.FC<SurveyCardProps> = ({
   responseCount,
 }) => {
   const handleShare = () => {
-    const url = `${import.meta.env.VITE_FRONTEND_DEV_URL}/submit/${shareURL}`;
+    const url = `${getBaseURL()}/submit/${shareURL}`;
     navigator.clipboard.writeText(url);
     toast.success("Survey URL copied to clipboard!");
   };

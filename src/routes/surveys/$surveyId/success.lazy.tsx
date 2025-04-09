@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useSurveyById } from "@/hooks/queries/useSurveyById";
 import { ErrorDisplay } from "@/components/layout/errorDisplay";
 import { DefaultPendingSkeleton } from "@/components/layout/loadingSkeleton";
+import { getBaseURL } from "@/lib/utils";
 
 export const Route = createLazyFileRoute("/surveys/$surveyId/success")({
   component: RouteComponent,
@@ -35,7 +36,7 @@ function RouteComponent() {
     return <p className="text-gray-500 text-center">Survey not found</p>;
   }
 
-  const shareURL = `${import.meta.env.VITE_FRONTEND_DEV_URL}/submit/${survey?.share_url}`;
+  const shareURL = `${getBaseURL()}/submit/${survey?.share_url}`;
 
   return (
     <>

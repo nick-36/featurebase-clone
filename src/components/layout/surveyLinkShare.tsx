@@ -2,9 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { getBaseURL } from "@/lib/utils";
 
 const SurveyLinkShare = ({ shareURl }: { shareURl: string | null }) => {
-  const shareLink = `${import.meta.env.VITE_FRONTEND_DEV_URL}/submit/${shareURl}`;
+  const shareLink = `${getBaseURL()}/submit/${shareURl}`;
 
   return (
     <div className="flex items-center justify-between gap-4 w-full">
