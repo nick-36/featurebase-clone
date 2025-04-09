@@ -12,7 +12,7 @@ function IndexPageComp() {
   return (
     <div>
       <Hero />
-      {session && <SurveyList />}
+      {session ? <SurveyList /> : <></>}
     </div>
   );
 }

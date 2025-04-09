@@ -12,12 +12,12 @@ export const queryClient = new QueryClient({
 
 export const queryKeys = {
   auth: {
-    session: ["auth", "session"] as const,
-    all: ["auth"] as const,
+    session: ["auth", "session"],
+    all: ["auth"],
   },
   surveys: {
     all: ["surveys"] as const,
-    detail: (id: string) => ["surveys", id] as const,
-    responses: (id: string) => ["surveys", id, "responses"] as const,
+    detail: (id: string) => ["survey", id],
+    withSubmissions: (id: string) => ["surveys", id, "withSubmissions"],
   },
 };

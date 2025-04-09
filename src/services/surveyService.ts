@@ -1,4 +1,6 @@
 import supabase from "@/config/supabaseClient";
+import { isQuestionElement } from "@/lib/utils";
+import { FormElementInstance } from "@/types/formElement";
 
 export async function getCurrentUser() {
   const {
@@ -47,16 +49,42 @@ export async function getSurveys(): Promise<Survey[]> {
   if (error) throw error;
   return data;
 }
-
-export const getSurveyById = async (id: string): Promise<Survey> => {
-  const { data, error } = await supabase
+export const getSurveyById = async (
+  id: string
+): Promise<
+  Survey & {
+    submissionRate: number;
+    bounceRate: number;
+  }
+> => {
+  const { data: form, error } = await supabase
     .from("forms")
     .select("*")
     .eq("id", id)
     .single();
 
-  if (error) throw error;
-  return data as Survey;
+  if (error || !form) throw error ?? new Error("Survey not found");
+
+  const visits = Math.max(0, form.visits ?? 0);
+  const submissions = Math.max(0, form.submissions ?? 0);
+
+  let submissionRate = 0;
+  let bounceRate = 100;
+
+  if (visits > 0) {
+    const safeSubmissions = Math.min(submissions, visits);
+    submissionRate = (safeSubmissions / visits) * 100;
+    bounceRate = 100 - submissionRate;
+  }
+
+  bounceRate = Math.max(0, Math.min(100, bounceRate));
+  submissionRate = Math.max(0, Math.min(100, submissionRate));
+
+  return {
+    ...form,
+    submissionRate: parseFloat(submissionRate.toFixed(2)),
+    bounceRate: parseFloat(bounceRate.toFixed(2)),
+  };
 };
 
 export const createSurvey = async (
@@ -92,6 +120,38 @@ export async function updateSurveyContent(id: string, jsonContent: string) {
 export async function publishForm(id: string) {
   const user = await getCurrentUser();
 
+  const { data: form, error: fetchError } = await supabase
+    .from("forms")
+    .select("content")
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .single();
+
+  if (fetchError || !form) {
+    throw new Error("Error publishing form");
+  }
+  let content: FormElementInstance[];
+
+  try {
+    content = JSON.parse(form.content as string);
+  } catch (err) {
+    throw new Error("Failed to parse form content.");
+  }
+
+  if (!Array.isArray(content)) {
+    throw new Error("Survey content is invalid or empty.");
+  }
+
+  const typedContent = content as FormElementInstance[];
+
+  const hasQuestions = typedContent.some((el) => isQuestionElement(el.type));
+
+  if (!hasQuestions) {
+    throw new Error(
+      "Survey must contain at least one question before publishing."
+    );
+  }
+
   const { error } = await supabase
     .from("forms")
     .update({ published: true })
@@ -105,16 +165,24 @@ export async function publishForm(id: string) {
 
 export async function getSurveyByFormURL(surveyUrl: string) {
   const { data, error } = await supabase
-    .rpc("increment_visit_count", { survey_url: surveyUrl })
+    .from("forms")
+    .select("*")
+    .eq("share_url", surveyUrl)
     .single();
 
-  if (error || !data) {
-    console.error("Error fetching survey via RPC:", error);
-    throw error || new Error("Survey not found");
-  }
+  if (error || !data) throw error;
 
   return data;
 }
+
+export async function trackUniqueFormVisit(surveyUrl: string) {
+  try {
+    await supabase.rpc("increment_visit_count", { survey_url: surveyUrl });
+  } catch (error) {
+    console.error("Error incrementing visit count:", error);
+  }
+}
+
 export async function submitSurvey(surveyUrl: string, content: string) {
   const { data: form, error: fetchError } = await supabase
     .from("forms")
@@ -151,7 +219,38 @@ export async function getSurveysWithSubmissions(id: string) {
     .eq("user_id", user.id)
     .single();
 
-  console.log(data, "DATA__");
   if (error || !data) throw new Error("Survey not found");
   return data;
 }
+
+export async function fetchSurveysPaginated(page: number, pageSize = 6) {
+  const from = page * pageSize;
+  const to = from + pageSize - 1;
+  const { data, error } = await supabase
+    .from("forms")
+    .select("*", { count: "exact" })
+    .order("created_at", { ascending: false })
+    .range(from, to);
+
+  if (error) throw error;
+
+  return {
+    surveys: data ?? [],
+    hasMore: (data?.length ?? 0) === pageSize,
+  };
+}
+
+export const unpublishSurvey = async ({ surveyId }: { surveyId: string }) => {
+  const { data, error } = await supabase
+    .from("forms")
+    .update({ published: false })
+    .eq("id", surveyId)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};

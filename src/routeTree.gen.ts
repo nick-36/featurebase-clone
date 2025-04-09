@@ -8,26 +8,44 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as NotFoundImport } from './routes/notFound'
 import { Route as IndexImport } from './routes/index'
+import { Route as SubmitSurveyUrlImport } from './routes/submit/$surveyUrl'
 import { Route as AuthSignupImport } from './routes/auth/signup'
 import { Route as AuthLoginImport } from './routes/auth/login'
-import { Route as SurveysSurveyIdIndexImport } from './routes/surveys/$surveyId/index'
+
+// Create Virtual Routes
+
+const NotFoundLazyImport = createFileRoute('/notFound')()
+const SurveysSurveyIdIndexLazyImport = createFileRoute('/surveys/$surveyId/')()
+const SurveysSurveyIdSuccessLazyImport = createFileRoute(
+  '/surveys/$surveyId/success',
+)()
+const SurveysSurveyIdBuilderLazyImport = createFileRoute(
+  '/surveys/$surveyId/builder',
+)()
 
 // Create/Update Routes
 
-const NotFoundRoute = NotFoundImport.update({
+const NotFoundLazyRoute = NotFoundLazyImport.update({
   id: '/notFound',
   path: '/notFound',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() => import('./routes/notFound.lazy').then((d) => d.Route))
 
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SubmitSurveyUrlRoute = SubmitSurveyUrlImport.update({
+  id: '/submit/$surveyUrl',
+  path: '/submit/$surveyUrl',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -43,11 +61,33 @@ const AuthLoginRoute = AuthLoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const SurveysSurveyIdIndexRoute = SurveysSurveyIdIndexImport.update({
+const SurveysSurveyIdIndexLazyRoute = SurveysSurveyIdIndexLazyImport.update({
   id: '/surveys/$surveyId/',
   path: '/surveys/$surveyId/',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/surveys/$surveyId/index.lazy').then((d) => d.Route),
+)
+
+const SurveysSurveyIdSuccessLazyRoute = SurveysSurveyIdSuccessLazyImport.update(
+  {
+    id: '/surveys/$surveyId/success',
+    path: '/surveys/$surveyId/success',
+    getParentRoute: () => rootRoute,
+  } as any,
+).lazy(() =>
+  import('./routes/surveys/$surveyId/success.lazy').then((d) => d.Route),
+)
+
+const SurveysSurveyIdBuilderLazyRoute = SurveysSurveyIdBuilderLazyImport.update(
+  {
+    id: '/surveys/$surveyId/builder',
+    path: '/surveys/$surveyId/builder',
+    getParentRoute: () => rootRoute,
+  } as any,
+).lazy(() =>
+  import('./routes/surveys/$surveyId/builder.lazy').then((d) => d.Route),
+)
 
 // Populate the FileRoutesByPath interface
 
@@ -64,7 +104,7 @@ declare module '@tanstack/react-router' {
       id: '/notFound'
       path: '/notFound'
       fullPath: '/notFound'
-      preLoaderRoute: typeof NotFoundImport
+      preLoaderRoute: typeof NotFoundLazyImport
       parentRoute: typeof rootRoute
     }
     '/auth/login': {
@@ -81,11 +121,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignupImport
       parentRoute: typeof rootRoute
     }
+    '/submit/$surveyUrl': {
+      id: '/submit/$surveyUrl'
+      path: '/submit/$surveyUrl'
+      fullPath: '/submit/$surveyUrl'
+      preLoaderRoute: typeof SubmitSurveyUrlImport
+      parentRoute: typeof rootRoute
+    }
+    '/surveys/$surveyId/builder': {
+      id: '/surveys/$surveyId/builder'
+      path: '/surveys/$surveyId/builder'
+      fullPath: '/surveys/$surveyId/builder'
+      preLoaderRoute: typeof SurveysSurveyIdBuilderLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/surveys/$surveyId/success': {
+      id: '/surveys/$surveyId/success'
+      path: '/surveys/$surveyId/success'
+      fullPath: '/surveys/$surveyId/success'
+      preLoaderRoute: typeof SurveysSurveyIdSuccessLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/surveys/$surveyId/': {
       id: '/surveys/$surveyId/'
       path: '/surveys/$surveyId'
       fullPath: '/surveys/$surveyId'
-      preLoaderRoute: typeof SurveysSurveyIdIndexImport
+      preLoaderRoute: typeof SurveysSurveyIdIndexLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -95,27 +156,36 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/notFound': typeof NotFoundRoute
+  '/notFound': typeof NotFoundLazyRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
-  '/surveys/$surveyId': typeof SurveysSurveyIdIndexRoute
+  '/submit/$surveyUrl': typeof SubmitSurveyUrlRoute
+  '/surveys/$surveyId/builder': typeof SurveysSurveyIdBuilderLazyRoute
+  '/surveys/$surveyId/success': typeof SurveysSurveyIdSuccessLazyRoute
+  '/surveys/$surveyId': typeof SurveysSurveyIdIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/notFound': typeof NotFoundRoute
+  '/notFound': typeof NotFoundLazyRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
-  '/surveys/$surveyId': typeof SurveysSurveyIdIndexRoute
+  '/submit/$surveyUrl': typeof SubmitSurveyUrlRoute
+  '/surveys/$surveyId/builder': typeof SurveysSurveyIdBuilderLazyRoute
+  '/surveys/$surveyId/success': typeof SurveysSurveyIdSuccessLazyRoute
+  '/surveys/$surveyId': typeof SurveysSurveyIdIndexLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/notFound': typeof NotFoundRoute
+  '/notFound': typeof NotFoundLazyRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
-  '/surveys/$surveyId/': typeof SurveysSurveyIdIndexRoute
+  '/submit/$surveyUrl': typeof SubmitSurveyUrlRoute
+  '/surveys/$surveyId/builder': typeof SurveysSurveyIdBuilderLazyRoute
+  '/surveys/$surveyId/success': typeof SurveysSurveyIdSuccessLazyRoute
+  '/surveys/$surveyId/': typeof SurveysSurveyIdIndexLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -125,33 +195,53 @@ export interface FileRouteTypes {
     | '/notFound'
     | '/auth/login'
     | '/auth/signup'
+    | '/submit/$surveyUrl'
+    | '/surveys/$surveyId/builder'
+    | '/surveys/$surveyId/success'
     | '/surveys/$surveyId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/notFound' | '/auth/login' | '/auth/signup' | '/surveys/$surveyId'
+  to:
+    | '/'
+    | '/notFound'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/submit/$surveyUrl'
+    | '/surveys/$surveyId/builder'
+    | '/surveys/$surveyId/success'
+    | '/surveys/$surveyId'
   id:
     | '__root__'
     | '/'
     | '/notFound'
     | '/auth/login'
     | '/auth/signup'
+    | '/submit/$surveyUrl'
+    | '/surveys/$surveyId/builder'
+    | '/surveys/$surveyId/success'
     | '/surveys/$surveyId/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  NotFoundRoute: typeof NotFoundRoute
+  NotFoundLazyRoute: typeof NotFoundLazyRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthSignupRoute: typeof AuthSignupRoute
-  SurveysSurveyIdIndexRoute: typeof SurveysSurveyIdIndexRoute
+  SubmitSurveyUrlRoute: typeof SubmitSurveyUrlRoute
+  SurveysSurveyIdBuilderLazyRoute: typeof SurveysSurveyIdBuilderLazyRoute
+  SurveysSurveyIdSuccessLazyRoute: typeof SurveysSurveyIdSuccessLazyRoute
+  SurveysSurveyIdIndexLazyRoute: typeof SurveysSurveyIdIndexLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  NotFoundRoute: NotFoundRoute,
+  NotFoundLazyRoute: NotFoundLazyRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthSignupRoute: AuthSignupRoute,
-  SurveysSurveyIdIndexRoute: SurveysSurveyIdIndexRoute,
+  SubmitSurveyUrlRoute: SubmitSurveyUrlRoute,
+  SurveysSurveyIdBuilderLazyRoute: SurveysSurveyIdBuilderLazyRoute,
+  SurveysSurveyIdSuccessLazyRoute: SurveysSurveyIdSuccessLazyRoute,
+  SurveysSurveyIdIndexLazyRoute: SurveysSurveyIdIndexLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -168,6 +258,9 @@ export const routeTree = rootRoute
         "/notFound",
         "/auth/login",
         "/auth/signup",
+        "/submit/$surveyUrl",
+        "/surveys/$surveyId/builder",
+        "/surveys/$surveyId/success",
         "/surveys/$surveyId/"
       ]
     },
@@ -175,7 +268,7 @@ export const routeTree = rootRoute
       "filePath": "index.tsx"
     },
     "/notFound": {
-      "filePath": "notFound.tsx"
+      "filePath": "notFound.lazy.tsx"
     },
     "/auth/login": {
       "filePath": "auth/login.tsx"
@@ -183,8 +276,17 @@ export const routeTree = rootRoute
     "/auth/signup": {
       "filePath": "auth/signup.tsx"
     },
+    "/submit/$surveyUrl": {
+      "filePath": "submit/$surveyUrl.tsx"
+    },
+    "/surveys/$surveyId/builder": {
+      "filePath": "surveys/$surveyId/builder.lazy.tsx"
+    },
+    "/surveys/$surveyId/success": {
+      "filePath": "surveys/$surveyId/success.lazy.tsx"
+    },
     "/surveys/$surveyId/": {
-      "filePath": "surveys/$surveyId/index.tsx"
+      "filePath": "surveys/$surveyId/index.lazy.tsx"
     }
   }
 }
