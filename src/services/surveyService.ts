@@ -224,11 +224,14 @@ export async function getSurveysWithSubmissions(id: string) {
 }
 
 export async function fetchSurveysPaginated(page: number, pageSize = 6) {
+  const user = await getCurrentUser();
+
   const from = page * pageSize;
   const to = from + pageSize - 1;
   const { data, error } = await supabase
     .from("forms")
     .select("*", { count: "exact" })
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .range(from, to);
 
