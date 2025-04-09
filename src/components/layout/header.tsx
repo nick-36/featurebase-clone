@@ -11,14 +11,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import useAuthStore, { useSession, useSignOut } from "@/stores/authStore";
+import useAuthStore from "@/stores/authStore";
+import { useSession, useSignOut } from "@/hooks/auth";
 
 const Header = () => {
   const { session } = useSession();
   const isLoading = useAuthStore((state) => state.loading);
   const signOutMutation = useSignOut();
   const matches = useMatches();
-  const headerProps = matches[matches.length - 1]?.context?.header || {};
+  const headerProps = matches.at(-1)?.context?.header || {};
   const { showAuthButtons = true } = headerProps;
 
   const userEmail = session?.user?.email || "anonymous@example.com";

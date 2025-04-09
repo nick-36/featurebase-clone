@@ -1,12 +1,13 @@
 import { create } from "zustand";
-import { Session } from "@supabase/supabase-js";
 import supabase from "@/config/supabaseClient";
-import { useMutation } from "@tanstack/react-query";
-import { queryClient, queryKeys } from "@/lib/queryClient";
+import type { User, Session } from "@supabase/supabase-js";
 
-interface AuthResult {
+export interface AuthResult {
   success: boolean;
-  data?: any;
+  data: {
+    session?: Session | null;
+    user?: User | null;
+  };
   error?: string;
 }
 
@@ -64,89 +65,6 @@ if (typeof window !== "undefined") {
     window.addEventListener("beforeunload", () => {
       if (unsubscribe) unsubscribe();
     });
-  });
-}
-
-export function useSession() {
-  const session = useAuthStore((state) => state.session);
-  const loading = useAuthStore((state) => state.loading);
-
-  return {
-    session,
-    isLoading: loading,
-  };
-}
-
-export function useSignUp() {
-  return useMutation({
-    mutationFn: async ({
-      email,
-      password,
-    }: {
-      email: string;
-      password: string;
-    }): Promise<AuthResult> => {
-      const { data, error } = await supabase.auth.signUp({
-        email: email.toLowerCase(),
-        password,
-      });
-      if (error) throw new Error(error.message);
-      return { success: true, data };
-    },
-    onSuccess: (result) => {
-      if (result.success && result.data?.session) {
-        useAuthStore.getState().setSession(result.data.session);
-      }
-    },
-  });
-}
-
-export function useSignIn() {
-  return useMutation({
-    mutationFn: async ({
-      email,
-      password,
-    }: {
-      email: string;
-      password: string;
-    }): Promise<AuthResult> => {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.toLowerCase(),
-        password,
-      });
-      if (error) throw new Error(error.message);
-      return { success: true, data };
-    },
-    onSuccess: (result) => {
-      if (result.success && result.data?.session) {
-        useAuthStore.getState().setSession(result.data.session);
-      }
-    },
-  });
-}
-
-export function useSignOut() {
-  return useMutation({
-    mutationFn: async () => {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-
-      const { data } = await supabase.auth.getSession();
-      if (data.session) throw new Error("Session not cleared");
-
-      return true;
-    },
-    onSuccess: () => {
-      console.log("Sign-out success");
-      useAuthStore.getState().setSession(null);
-    },
-    onError: (error) => {
-      console.error("Sign-out error:", error);
-      useAuthStore.getState().setSession(null);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.auth.session });
-    },
   });
 }
 

@@ -23,7 +23,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { UserValidationSignUp } from "@/lib/validation/userValidation";
 import { Link } from "@tanstack/react-router";
 import { LoaderCircle } from "lucide-react";
-import { useSignUp } from "@/stores/authStore";
+import { useSignUp } from "@/hooks/auth";
+import { z } from "zod";
+
+type SignUpFormValues = z.infer<typeof UserValidationSignUp>;
 
 export const Route = createFileRoute("/auth/signup")({
   component: SignupPage,
@@ -46,7 +49,7 @@ function SignupPage() {
     },
   });
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: SignUpFormValues) => {
     setIsLoading(true);
 
     try {

@@ -24,19 +24,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { formSchema, formSchemaType } from "@/lib/validation/surveyForm";
+import {
+  formSchema,
+  CreateSurveyFormSchemaType,
+} from "@/lib/validation/surveyForm";
 import { toast } from "sonner";
-import { useSession } from "@/stores/authStore";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@/lib/queryClient";
-import { createSurvey } from "@/services/surveyService";
+import { useSession } from "@/hooks/auth";
+import { useCreateSurvey } from "@/hooks/mutations";
 
 const CreateSurveyBtn = () => {
   const [open, setOpen] = useState(false);
   const { session } = useSession();
-  const queryClient = useQueryClient();
 
-  const form = useForm<formSchemaType>({
+  const form = useForm<CreateSurveyFormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -44,24 +44,18 @@ const CreateSurveyBtn = () => {
     },
   });
 
-  const mutation = useMutation({
-    mutationFn: createSurvey,
-    onSuccess: () => {
-      toast.success("New survey created successfully!");
-      queryClient.invalidateQueries({ queryKey: queryKeys.surveys.all });
+  const { mutate, isPending } = useCreateSurvey({
+    onSuccessCallback: () => {
       setOpen(false);
       form.reset();
     },
-    onError: () => {
-      toast.error("Something went wrong! Please try again.");
-    },
   });
 
-  const onSubmit = (values: formSchemaType) => {
+  const onSubmit = (values: CreateSurveyFormSchemaType) => {
     if (!session?.user?.id) return toast.error("User not logged in");
-    mutation.mutate({
+    mutate({
       name: values.name,
-      description: values.description as string,
+      description: values.description,
     });
   };
 
@@ -120,10 +114,17 @@ const CreateSurveyBtn = () => {
               )}
             />
             <DialogFooter>
-              <Button disabled={mutation.isPending} className="w-full mt-4">
-                {!mutation.isPending && <span>Save</span>}
-                {mutation.isPending && (
-                  <LoaderCircle className="animate-spin" />
+              <Button
+                disabled={isPending}
+                className="w-full mt-4 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                {isPending ? (
+                  <>
+                    <LoaderCircle className="animate-spin w-4 h-4" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <span>Save</span>
                 )}
               </Button>
             </DialogFooter>

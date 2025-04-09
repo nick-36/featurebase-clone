@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
-import { Badge } from "@/components/ui/badge";
 import { Share2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 
@@ -47,18 +46,6 @@ const SurveyCard: React.FC<SurveyCardProps> = ({
           <CardTitle className="text-lg font-semibold text-blue-800">
             {name}
           </CardTitle>
-          <Badge
-            variant={status === "active" ? "default" : "secondary"}
-            className={
-              status === "active"
-                ? "bg-green-100 text-green-700"
-                : status === "draft"
-                  ? "bg-yellow-100 text-yellow-700"
-                  : "bg-gray-100 text-gray-700"
-            }
-          >
-            {/* {status.charAt(0).toUpperCase() + status.slice(1)} */}
-          </Badge>
         </div>
         <CardDescription className="text-gray-600 line-clamp-2">
           {description || "No description provided."}

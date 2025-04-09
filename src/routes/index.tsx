@@ -1,6 +1,6 @@
 import Hero from "@/components/layout/hero";
 import SurveyList from "@/components/layout/surveyList";
-import { useSession } from "@/stores/authStore";
+import { useSession } from "@/hooks/auth";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({

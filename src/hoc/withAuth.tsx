@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useSession } from "@/stores/authStore";
+import { useSession } from "@/hooks/auth";
 
 export function withAuth<P extends object>(
   WrappedComponent: React.ComponentType<P>

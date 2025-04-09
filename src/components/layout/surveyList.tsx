@@ -3,9 +3,7 @@ import SurveyCard from "./surveyCard";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import CreateSurveyBtn from "./createSurvey";
-import { useQuery } from "@tanstack/react-query";
-import { queryKeys } from "@/lib/queryClient";
-import { getSurveys } from "@/services/surveyService";
+import { useSurveys } from "@/hooks/queries";
 
 export const SurveyCardSkeleton = () => {
   return (
@@ -27,15 +25,7 @@ export const SurveyCardSkeleton = () => {
 
 const SurveyList = () => {
   const createSurveyRef = useRef<HTMLDivElement | null>(null);
-  const {
-    data: surveys = [],
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: queryKeys.surveys.all,
-    queryFn: getSurveys,
-  });
+  const { data: surveys = [], isLoading, isError, error } = useSurveys();
 
   if (isLoading) {
     return (

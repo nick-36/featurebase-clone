@@ -23,7 +23,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SignInSchema } from "@/lib/validation/userValidation";
 import { Link } from "@tanstack/react-router";
 import { LoaderCircle } from "lucide-react";
-import { useSignIn } from "@/stores/authStore";
+import { useSignIn } from "@/hooks/auth";
+import { z } from "zod";
+
+type SignInFormValues = z.infer<typeof SignInSchema>;
 export const Route = createFileRoute("/auth/login")({
   component: LoginPage,
   context: () => ({
@@ -46,7 +49,7 @@ function LoginPage() {
     },
   });
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: SignInFormValues) => {
     setIsLoading(true);
     try {
       const { email, password } = values;
