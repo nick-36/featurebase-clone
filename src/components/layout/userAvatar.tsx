@@ -41,15 +41,6 @@ const UserAvatar = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem className="cursor-pointer">
-            Profile
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
-            Dashboard
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
           Log out
         </DropdownMenuItem>
