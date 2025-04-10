@@ -90,11 +90,13 @@ const SurveyDetailComp = () => {
         />
       </div>
       <Separator />
-      <div className="pb-10">
-        {submittedSurvey && (
+      {submittedSurvey ? (
+        <div className="pb-10">
           <SubmissionTable submittedSurvey={submittedSurvey} />
-        )}
-      </div>
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

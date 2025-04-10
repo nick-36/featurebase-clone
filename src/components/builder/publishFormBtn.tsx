@@ -77,7 +77,8 @@ const PublishFormBtn = ({
             disabled={loading}
             onClick={handlePublish}
           >
-            Proceed {loading && <LoaderCircle className="animate-spin" />}
+            Proceed{" "}
+            {loading ? <LoaderCircle className="animate-spin" /> : <></>}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
