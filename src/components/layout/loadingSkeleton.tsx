@@ -24,3 +24,12 @@ export function DefaultPendingSkeleton() {
     </div>
   );
 }
+
+export const PendingSkeleton = () => {
+  return (
+    <div className="p-4">
+      <Skeleton className="w-full  mb-4" />
+      <Skeleton className="w-full h-96" />
+    </div>
+  );
+};

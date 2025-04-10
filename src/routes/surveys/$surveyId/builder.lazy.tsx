@@ -1,9 +1,9 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
 import Builder from "@/components/builder/surveyBuilder";
 import { useParams } from "@tanstack/react-router";
-import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorDisplay } from "@/components/layout/errorDisplay";
 import { useSurveyById } from "@/hooks/queries/useSurveyById";
+import { PendingSkeleton } from "@/components/layout/loadingSkeleton";
 
 const BuilderPage = () => {
   const { surveyId } = useParams({ from: "/surveys/$surveyId/builder" });
@@ -17,12 +17,7 @@ const BuilderPage = () => {
   });
 
   if (isLoading) {
-    return (
-      <div className="p-4">
-        <Skeleton className="w-full  mb-4" />
-        <Skeleton className="w-full h-96" />
-      </div>
-    );
+    return <PendingSkeleton />;
   }
 
   if (error) {

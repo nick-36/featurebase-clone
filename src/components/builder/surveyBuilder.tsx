@@ -11,6 +11,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { useBuilder } from "@/stores/builderStore";
+import { PendingSkeleton } from "@/components/layout/loadingSkeleton";
 
 const PreviewDialogBtn = lazy(
   () => import("@/components/builder/previewDialogBtn")
@@ -54,6 +55,10 @@ const SurveyBuilder = ({ survey }: { survey: Survey }) => {
     const readyTimeOut = setTimeout(() => setIsReady(true), 500);
     return () => clearTimeout(readyTimeOut);
   }, [survey, isReady, setElements, onSelectElement]);
+
+  if (!isReady) {
+    return <PendingSkeleton />;
+  }
 
   return (
     <DndContext sensors={sensors}>
