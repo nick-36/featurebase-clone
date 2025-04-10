@@ -172,13 +172,13 @@ const FormSubmitComponent = ({
             onClick={() => startTransition(submitForm)}
             disabled={loading}
           >
-            {!loading ? (
+            {loading ? (
+              <LoaderCircle className="animate-spin" />
+            ) : (
               <>
                 <MousePointerClick className="mr-2" />
                 Submit
               </>
-            ) : (
-              <LoaderCircle className="animate-spin" />
             )}
           </Button>
         </div>
