@@ -193,7 +193,9 @@ const FormComponent = ({
   useEffect(() => {
     setError(isInvalid === true);
   }, [isInvalid]);
+
   const id = `checkbox-${element.id}`;
+
   return (
     <div className="flex items-top space-x-2">
       <Checkbox
@@ -201,13 +203,10 @@ const FormComponent = ({
         checked={value}
         className={cn(error && "border-red-500")}
         onCheckedChange={(checked) => {
-          let value = false;
-          if (checked === true) {
-            value = true;
-          }
+          const value = !!checked;
           setValue(value);
           if (!submitValue) return;
-          const stringVal = value ? "true" : "false";
+          const stringVal = checked.toString();
           const valid = CheckboxFormFieldElement.validate(element, stringVal);
           setError(!valid);
           submitValue(element?.id, stringVal);
@@ -232,7 +231,6 @@ const FormComponent = ({
     </div>
   );
 };
-
 const CheckboxFormFieldElement: FormElement = {
   type,
   construct: (id: string) => ({

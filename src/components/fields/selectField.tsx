@@ -290,7 +290,6 @@ const FormComponent = ({
 
   useEffect(() => {
     setError(isInvalid === true);
-    console.log(error, "Select-FIELD");
   }, [isInvalid]);
 
   return (
