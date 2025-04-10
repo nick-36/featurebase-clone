@@ -28,21 +28,30 @@ export const Route = createFileRoute("/submit/$surveyUrl")({
     };
   },
   loader: async ({ params }) => {
-    const surveyUrl = params.surveyUrl;
-    const survey = await getSurveyByFormURL(surveyUrl);
+    try {
+      const surveyUrl = params.surveyUrl;
+      const survey = await getSurveyByFormURL(surveyUrl);
 
-    if (!survey) {
-      throw new Error("Form Not Found!");
+      if (!survey) {
+        throw new Error("Survey Not Found!");
+      }
+
+      const formContent: FormElementInstance[] =
+        typeof survey.content === "string" ? JSON.parse(survey.content) : [];
+
+      return {
+        surveyUrl,
+        formContent,
+        isPublished: survey.published,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        surveyUrl: "",
+        formContent: "",
+        isPublished: false,
+      };
     }
-
-    const formContent: FormElementInstance[] =
-      typeof survey.content === "string" ? JSON.parse(survey.content) : [];
-
-    return {
-      surveyUrl,
-      formContent,
-      isPublished: survey.published,
-    };
   },
 });
 

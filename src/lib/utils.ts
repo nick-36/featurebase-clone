@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { redirect } from "@tanstack/react-router";
 import supabase from "@/config/supabaseClient";
 import { ElementsType, QuestionElement } from "@/types/formElement";
+import { BarChart3, ClipboardList, LayoutDashboard } from "lucide-react";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -40,3 +41,24 @@ export const getBaseURL = () => {
     return import.meta.env.VITE_FRONTEND_PROD_URL;
   return import.meta.env.VITE_FRONTEND_PREVIEW_URL;
 };
+
+export const sidebarNavLinks = [
+  {
+    title: "Dashboard",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+    id: "dashboard",
+  },
+  {
+    title: "Surveys",
+    href: "/dashboard/surveys",
+    icon: ClipboardList,
+    id: "surveys",
+  },
+  {
+    title: "Analytics",
+    href: "/dashboard/analytics",
+    icon: BarChart3,
+    id: "analytics",
+  },
+];

@@ -40,6 +40,8 @@ export default defineConfig({
           // TanStack (Heavy, loaded with TypeScript helpers & features)
           tanstack: ["@tanstack/react-query", "@tanstack/react-router"],
 
+          recharts: ["recharts"],
+
           // Radix UI: Big set of composables, mostly needed for forms/dialogs
           radix: [
             "@radix-ui/react-accordion",

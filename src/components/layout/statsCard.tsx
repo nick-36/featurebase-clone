@@ -21,25 +21,26 @@ export const StatsCard = ({
   return (
     <Card
       className={cn(
-        "bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200  bg-gradient-to-br from-blue-50 via-white to-blue-100"
+        "bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 bg-gradient-to-br from-blue-50 via-white to-blue-100",
+        "w-full max-w-full sm:max-w-sm md:max-w-md"
       )}
     >
-      <CardHeader className="pb-2 flex flex-row justify-between items-center">
-        <CardTitle className="text-sm font-medium text-gray-500">
+      <CardHeader className="pb-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+        <CardTitle className="text-sm sm:text-base font-medium text-gray-500">
           {title}
         </CardTitle>
-        <div className="text-gray-800 text-lg">{icon}</div>
+        <div className="text-gray-800 text-lg sm:text-xl">{icon}</div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="space-y-1">
         {loading ? (
           <Skeleton className="h-8 w-28 rounded" />
         ) : (
-          <p className="text-3xl font-semibold text-gray-900 leading-tight">
+          <p className="text-2xl sm:text-3xl font-semibold text-gray-900 leading-tight">
             {statValue}
           </p>
         )}
-        <p className="text-xs text-gray-400 mt-1">{description}</p>
+        <p className="text-xs sm:text-sm text-gray-400">{description}</p>
       </CardContent>
     </Card>
   );

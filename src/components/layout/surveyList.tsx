@@ -24,8 +24,18 @@ export const SurveyCardSkeleton = () => {
     </Card>
   );
 };
-const SurveyList = () => {
+
+const SurveyList = ({
+  limit,
+  showCreteSurvey = true,
+  lazyLoad = true,
+}: {
+  limit?: number;
+  showCreteSurvey?: boolean;
+  lazyLoad?: boolean;
+}) => {
   const createSurveyRef = useRef<HTMLDivElement | null>(null);
+
   const {
     data,
     isLoading,
@@ -37,8 +47,9 @@ const SurveyList = () => {
 
   const surveys = data?.pages?.flatMap((page) => page.surveys) || [];
 
+  // 🔁 Handle load more only when lazyLoad is enabled
   const loadMore = () => {
-    if (hasNextPage && !isFetchingNextPage) {
+    if (lazyLoad && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
   };
@@ -50,17 +61,19 @@ const SurveyList = () => {
 
   if (error) return <ErrorDisplay error={error} />;
 
+  // 🔒 Use limit only when lazyLoad is false
+  const visibleSurveys = !lazyLoad && limit ? surveys.slice(0, limit) : surveys;
+
   return (
     <div
-      className="mx-auto mt-8 p-4"
+      className="mx-auto mt-8"
       ref={createSurveyRef}
       id="create-survey-section"
     >
-      <h2 className="text-2xl font-extrabold text-left mb-6">All Surveys</h2>
       <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-        <CreateSurveyBtn />
+        {showCreteSurvey && <CreateSurveyBtn />}
 
-        {surveys.map((survey) => (
+        {visibleSurveys.map((survey) => (
           <SurveyCard
             key={survey.id}
             id={survey.id}
@@ -73,18 +86,25 @@ const SurveyList = () => {
           />
         ))}
 
-        {isLoading &&
-          surveys?.length === 0 &&
+        {/* Only show skeletons if lazy loading is on */}
+        {lazyLoad &&
+          isLoading &&
+          surveys.length === 0 &&
           Array(5)
             .fill(0)
             .map((_, index) => <SurveyCardSkeleton key={`initial-${index}`} />)}
 
-        {isFetchingNextPage &&
+        {lazyLoad &&
+          isFetchingNextPage &&
           Array(3)
             .fill(0)
             .map((_, index) => <SurveyCardSkeleton key={`next-${index}`} />)}
       </ul>
-      {hasNextPage && <div ref={loadMoreRef} className="h-10 w-full mt-4" />}
+
+      {/* Only attach loadMoreRef if lazy loading is enabled */}
+      {lazyLoad && hasNextPage && (
+        <div ref={loadMoreRef} className="h-10 w-full mt-4" />
+      )}
     </div>
   );
 };

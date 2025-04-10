@@ -20,4 +20,7 @@ export const queryKeys = {
     detail: (id: string) => ["survey", id],
     withSubmissions: (id: string) => ["surveys", id, "withSubmissions"],
   },
+  dashboard: {
+    stats: ["dashboard", "stats"],
+  },
 };

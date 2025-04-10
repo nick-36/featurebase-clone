@@ -2,6 +2,20 @@ import supabase from "@/config/supabaseClient";
 import { isQuestionElement } from "@/lib/utils";
 import { FormElementInstance } from "@/types/formElement";
 
+type DashboardStats = {
+  totalSurveys: number;
+  activeSurveys: number;
+  totalResponses: number;
+  responsesLastMonth: number;
+  surveysLastMonth: number;
+  activeSurveysLastMonth: number;
+};
+
+export type SubmissionStat = {
+  date: string; // formatted as YYYY-MM-DD
+  count: number;
+};
+
 export async function getCurrentUser() {
   const {
     data: { session },
@@ -256,4 +270,66 @@ export const unpublishSurvey = async ({ surveyId }: { surveyId: string }) => {
   }
 
   return data;
+};
+
+export const getDashboardStats = async (): Promise<DashboardStats> => {
+  const user = await getCurrentUser();
+
+  if (!user) throw new Error("User not found");
+
+  const { data, error } = await supabase.rpc("get_dashboard_stats", {
+    p_user_id: user.id,
+  });
+
+  if (error) throw error;
+
+  if (!data) {
+    throw new Error("No dashboard stats returned from Supabase");
+  }
+
+  return data as DashboardStats;
+};
+
+export const getSubmissionStats = async (): Promise<SubmissionStat[]> => {
+  const user = await getCurrentUser();
+  if (!user) throw new Error("User not found");
+
+  const { data, error } = await supabase.rpc("get_submission_stats", {
+    p_user_id: user.id,
+  });
+
+  if (error) throw error;
+  return data as any[];
+};
+
+export const getTopSurveys = async () => {
+  const user = await getCurrentUser();
+  if (!user) throw new Error("User not found");
+
+  const { data: forms, error } = await supabase
+    .from("forms")
+    .select("id, name, submissions, visits")
+    .eq("user_id", user.id);
+
+  if (error) throw error;
+
+  const withConversion = forms.map((form) => ({
+    ...form,
+    conversionRate:
+      form.visits > 0 ? (form.submissions / form.visits) * 100 : 0,
+  }));
+
+  const mostSubmissions = [...withConversion].sort(
+    (a, b) => b.submissions - a.submissions
+  );
+  const mostVisits = [...withConversion].sort((a, b) => b.visits - a.visits);
+  const highestConversion = [...withConversion].sort(
+    (a, b) => b.conversionRate - a.conversionRate
+  );
+
+  return {
+    mostSubmissions,
+    mostVisits,
+    highestConversion,
+  };
 };

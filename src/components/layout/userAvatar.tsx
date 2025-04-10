@@ -9,16 +9,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useSession, useSignOut } from "@/hooks/auth";
+import { useNavigate } from "@tanstack/react-router";
 
 const UserAvatar = () => {
   const signOutMutation = useSignOut();
   const { session } = useSession();
+  const navigate = useNavigate();
 
   const userEmail = session?.user?.email || "anonymous@example.com";
   const userInitial = userEmail?.charAt(0)?.toUpperCase();
 
   const handleSignOut = () => {
     signOutMutation.mutate();
+    navigate({
+      to: "/",
+    });
   };
 
   return (
