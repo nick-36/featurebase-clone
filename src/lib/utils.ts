@@ -2,6 +2,8 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { redirect } from "@tanstack/react-router";
 import supabase from "@/config/supabaseClient";
+import { ElementsType, QuestionElement } from "@/types/formElement";
+import { BarChart3, ClipboardList, LayoutDashboard } from "lucide-react";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -25,3 +27,38 @@ export async function requireAuth() {
     });
   }
 }
+
+export const isQuestionElement = (
+  type: ElementsType
+): type is keyof typeof QuestionElement => {
+  return Object.values(QuestionElement).includes(type as QuestionElement);
+};
+
+export const getBaseURL = () => {
+  if (import.meta.env.MODE === "development")
+    return import.meta.env.VITE_FRONTEND_DEV_URL;
+  if (import.meta.env.MODE === "production")
+    return import.meta.env.VITE_FRONTEND_PROD_URL;
+  return import.meta.env.VITE_FRONTEND_PREVIEW_URL;
+};
+
+export const sidebarNavLinks = [
+  {
+    title: "Dashboard",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+    id: "dashboard",
+  },
+  {
+    title: "Surveys",
+    href: "/dashboard/surveys",
+    icon: ClipboardList,
+    id: "surveys",
+  },
+  {
+    title: "Analytics",
+    href: "/dashboard/analytics",
+    icon: BarChart3,
+    id: "analytics",
+  },
+];

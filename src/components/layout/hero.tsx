@@ -6,16 +6,9 @@ const Hero = () => {
   const { session } = useSession();
   const navigate = useNavigate();
 
-  const onGetStarted = () => {
+  const onGetStartedClick = () => {
     if (session) {
-      if (window.location.pathname === "/") {
-        const el = document.getElementById("create-survey-section");
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth" });
-        }
-      } else {
-        navigate({ to: "/" });
-      }
+      navigate({ to: "/dashboard" });
     } else {
       navigate({ to: "/auth/login", search: { redirectTo: "/" } });
     }
@@ -31,7 +24,7 @@ const Hero = () => {
           Create and share surveys easily to gather valuable insights.
         </p>
         <Button
-          onClick={onGetStarted}
+          onClick={onGetStartedClick}
           className="mt-6 px-6 py-3 bg-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-200 transition cursor-pointer"
         >
           Get Started

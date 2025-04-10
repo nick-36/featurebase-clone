@@ -27,4 +27,46 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // React core
+          react: ["react", "react-dom"],
+
+          // Supabase (API layer)
+          supabase: ["@supabase/supabase-js"],
+
+          // TanStack (Heavy, loaded with TypeScript helpers & features)
+          tanstack: ["@tanstack/react-query", "@tanstack/react-router"],
+
+          recharts: ["recharts"],
+
+          // Radix UI: Big set of composables, mostly needed for forms/dialogs
+          radix: [
+            "@radix-ui/react-accordion",
+            "@radix-ui/react-alert-dialog",
+            "@radix-ui/react-avatar",
+            "@radix-ui/react-checkbox",
+            "@radix-ui/react-dialog",
+            "@radix-ui/react-dropdown-menu",
+            "@radix-ui/react-label",
+            "@radix-ui/react-select",
+            "@radix-ui/react-separator",
+            "@radix-ui/react-slot",
+            "@radix-ui/react-switch",
+          ],
+
+          // UI Libraries
+          ui: ["lucide-react", "clsx", "class-variance-authority"],
+
+          // Forms + Validation
+          forms: ["react-hook-form", "@hookform/resolvers", "zod"],
+
+          // Utils
+          utils: ["uuid", "zustand", "date-fns", "sonner"],
+        },
+      },
+    },
+  },
 });

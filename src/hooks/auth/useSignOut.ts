@@ -15,7 +15,6 @@ export function useSignOut() {
       return true;
     },
     onSuccess: () => {
-      console.log("Sign-out success");
       useAuthStore.getState().setSession(null);
     },
     onError: (error) => {

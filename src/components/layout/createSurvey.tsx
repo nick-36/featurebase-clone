@@ -12,7 +12,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { LoaderCircle, FilePlus } from "lucide-react";
-
 import {
   Form,
   FormControl,
@@ -31,8 +30,9 @@ import {
 import { toast } from "sonner";
 import { useSession } from "@/hooks/auth";
 import { useCreateSurvey } from "@/hooks/mutations";
+import { Plus } from "lucide-react";
 
-const CreateSurveyBtn = () => {
+const CreateSurveyBtn = ({ btnView = false }: { btnView?: boolean }) => {
   const [open, setOpen] = useState(false);
   const { session } = useSession();
 
@@ -53,6 +53,7 @@ const CreateSurveyBtn = () => {
 
   const onSubmit = (values: CreateSurveyFormSchemaType) => {
     if (!session?.user?.id) return toast.error("User not logged in");
+
     mutate({
       name: values.name,
       description: values.description,
@@ -62,12 +63,19 @@ const CreateSurveyBtn = () => {
   return (
     <Dialog modal={true} open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="min-h-[200px] group bg-background border border-primary/50 flex flex-col justify-center items-center hover:border-primary hover:cursor-pointer border-dashed gap-4 rounded-md p-4">
-          <FilePlus className="w-8 h-8 text-foreground group-hover:text-primary" />
-          <p className="text-foreground font-bold text-xl group-hover:text-primary">
-            Create New Survey
-          </p>
-        </div>
+        {btnView ? (
+          <Button className="cursor-pointer">
+            <Plus />
+            Create Survey
+          </Button>
+        ) : (
+          <div className="min-h-[200px] group bg-background border border-primary/50 flex flex-col justify-center items-center hover:border-primary hover:cursor-pointer border-dashed gap-4 rounded-md p-4">
+            <FilePlus className="w-8 h-8 text-foreground group-hover:text-primary" />
+            <p className="text-foreground font-bold text-xl group-hover:text-primary">
+              Create New Survey
+            </p>
+          </div>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

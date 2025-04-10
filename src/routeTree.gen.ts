@@ -8,27 +8,61 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as NotFoundImport } from './routes/notFound'
 import { Route as IndexImport } from './routes/index'
+import { Route as SubmitSurveyUrlImport } from './routes/submit/$surveyUrl'
+import { Route as DashboardDashboardLayoutImport } from './routes/dashboard/_dashboardLayout'
 import { Route as AuthSignupImport } from './routes/auth/signup'
 import { Route as AuthLoginImport } from './routes/auth/login'
-import { Route as SurveysSurveyIdIndexImport } from './routes/surveys/$surveyId/index'
+import { Route as DashboardDashboardLayoutIndexImport } from './routes/dashboard/_dashboardLayout.index'
+import { Route as DashboardDashboardLayoutSurveysImport } from './routes/dashboard/_dashboardLayout.surveys'
+import { Route as DashboardDashboardLayoutAnalyticsImport } from './routes/dashboard/_dashboardLayout.analytics'
+
+// Create Virtual Routes
+
+const DashboardImport = createFileRoute('/dashboard')()
+const NotFoundLazyImport = createFileRoute('/notFound')()
+const SurveysSurveyIdIndexLazyImport = createFileRoute('/surveys/$surveyId/')()
+const SurveysSurveyIdSuccessLazyImport = createFileRoute(
+  '/surveys/$surveyId/success',
+)()
+const SurveysSurveyIdBuilderLazyImport = createFileRoute(
+  '/surveys/$surveyId/builder',
+)()
 
 // Create/Update Routes
 
-const NotFoundRoute = NotFoundImport.update({
+const DashboardRoute = DashboardImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const NotFoundLazyRoute = NotFoundLazyImport.update({
   id: '/notFound',
   path: '/notFound',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() => import('./routes/notFound.lazy').then((d) => d.Route))
 
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const SubmitSurveyUrlRoute = SubmitSurveyUrlImport.update({
+  id: '/submit/$surveyUrl',
+  path: '/submit/$surveyUrl',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DashboardDashboardLayoutRoute = DashboardDashboardLayoutImport.update({
+  id: '/_dashboardLayout',
+  getParentRoute: () => DashboardRoute,
 } as any)
 
 const AuthSignupRoute = AuthSignupImport.update({
@@ -43,11 +77,54 @@ const AuthLoginRoute = AuthLoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const SurveysSurveyIdIndexRoute = SurveysSurveyIdIndexImport.update({
+const SurveysSurveyIdIndexLazyRoute = SurveysSurveyIdIndexLazyImport.update({
   id: '/surveys/$surveyId/',
   path: '/surveys/$surveyId/',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/surveys/$surveyId/index.lazy').then((d) => d.Route),
+)
+
+const DashboardDashboardLayoutIndexRoute =
+  DashboardDashboardLayoutIndexImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => DashboardDashboardLayoutRoute,
+  } as any)
+
+const SurveysSurveyIdSuccessLazyRoute = SurveysSurveyIdSuccessLazyImport.update(
+  {
+    id: '/surveys/$surveyId/success',
+    path: '/surveys/$surveyId/success',
+    getParentRoute: () => rootRoute,
+  } as any,
+).lazy(() =>
+  import('./routes/surveys/$surveyId/success.lazy').then((d) => d.Route),
+)
+
+const SurveysSurveyIdBuilderLazyRoute = SurveysSurveyIdBuilderLazyImport.update(
+  {
+    id: '/surveys/$surveyId/builder',
+    path: '/surveys/$surveyId/builder',
+    getParentRoute: () => rootRoute,
+  } as any,
+).lazy(() =>
+  import('./routes/surveys/$surveyId/builder.lazy').then((d) => d.Route),
+)
+
+const DashboardDashboardLayoutSurveysRoute =
+  DashboardDashboardLayoutSurveysImport.update({
+    id: '/surveys',
+    path: '/surveys',
+    getParentRoute: () => DashboardDashboardLayoutRoute,
+  } as any)
+
+const DashboardDashboardLayoutAnalyticsRoute =
+  DashboardDashboardLayoutAnalyticsImport.update({
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => DashboardDashboardLayoutRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -64,7 +141,7 @@ declare module '@tanstack/react-router' {
       id: '/notFound'
       path: '/notFound'
       fullPath: '/notFound'
-      preLoaderRoute: typeof NotFoundImport
+      preLoaderRoute: typeof NotFoundLazyImport
       parentRoute: typeof rootRoute
     }
     '/auth/login': {
@@ -81,11 +158,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignupImport
       parentRoute: typeof rootRoute
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardImport
+      parentRoute: typeof rootRoute
+    }
+    '/dashboard/_dashboardLayout': {
+      id: '/dashboard/_dashboardLayout'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardDashboardLayoutImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/submit/$surveyUrl': {
+      id: '/submit/$surveyUrl'
+      path: '/submit/$surveyUrl'
+      fullPath: '/submit/$surveyUrl'
+      preLoaderRoute: typeof SubmitSurveyUrlImport
+      parentRoute: typeof rootRoute
+    }
+    '/dashboard/_dashboardLayout/analytics': {
+      id: '/dashboard/_dashboardLayout/analytics'
+      path: '/analytics'
+      fullPath: '/dashboard/analytics'
+      preLoaderRoute: typeof DashboardDashboardLayoutAnalyticsImport
+      parentRoute: typeof DashboardDashboardLayoutImport
+    }
+    '/dashboard/_dashboardLayout/surveys': {
+      id: '/dashboard/_dashboardLayout/surveys'
+      path: '/surveys'
+      fullPath: '/dashboard/surveys'
+      preLoaderRoute: typeof DashboardDashboardLayoutSurveysImport
+      parentRoute: typeof DashboardDashboardLayoutImport
+    }
+    '/surveys/$surveyId/builder': {
+      id: '/surveys/$surveyId/builder'
+      path: '/surveys/$surveyId/builder'
+      fullPath: '/surveys/$surveyId/builder'
+      preLoaderRoute: typeof SurveysSurveyIdBuilderLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/surveys/$surveyId/success': {
+      id: '/surveys/$surveyId/success'
+      path: '/surveys/$surveyId/success'
+      fullPath: '/surveys/$surveyId/success'
+      preLoaderRoute: typeof SurveysSurveyIdSuccessLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/dashboard/_dashboardLayout/': {
+      id: '/dashboard/_dashboardLayout/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardDashboardLayoutIndexImport
+      parentRoute: typeof DashboardDashboardLayoutImport
+    }
     '/surveys/$surveyId/': {
       id: '/surveys/$surveyId/'
       path: '/surveys/$surveyId'
       fullPath: '/surveys/$surveyId'
-      preLoaderRoute: typeof SurveysSurveyIdIndexImport
+      preLoaderRoute: typeof SurveysSurveyIdIndexLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -93,29 +226,81 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface DashboardDashboardLayoutRouteChildren {
+  DashboardDashboardLayoutAnalyticsRoute: typeof DashboardDashboardLayoutAnalyticsRoute
+  DashboardDashboardLayoutSurveysRoute: typeof DashboardDashboardLayoutSurveysRoute
+  DashboardDashboardLayoutIndexRoute: typeof DashboardDashboardLayoutIndexRoute
+}
+
+const DashboardDashboardLayoutRouteChildren: DashboardDashboardLayoutRouteChildren =
+  {
+    DashboardDashboardLayoutAnalyticsRoute:
+      DashboardDashboardLayoutAnalyticsRoute,
+    DashboardDashboardLayoutSurveysRoute: DashboardDashboardLayoutSurveysRoute,
+    DashboardDashboardLayoutIndexRoute: DashboardDashboardLayoutIndexRoute,
+  }
+
+const DashboardDashboardLayoutRouteWithChildren =
+  DashboardDashboardLayoutRoute._addFileChildren(
+    DashboardDashboardLayoutRouteChildren,
+  )
+
+interface DashboardRouteChildren {
+  DashboardDashboardLayoutRoute: typeof DashboardDashboardLayoutRouteWithChildren
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardDashboardLayoutRoute: DashboardDashboardLayoutRouteWithChildren,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/notFound': typeof NotFoundRoute
+  '/notFound': typeof NotFoundLazyRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
-  '/surveys/$surveyId': typeof SurveysSurveyIdIndexRoute
+  '/dashboard': typeof DashboardDashboardLayoutRouteWithChildren
+  '/submit/$surveyUrl': typeof SubmitSurveyUrlRoute
+  '/dashboard/analytics': typeof DashboardDashboardLayoutAnalyticsRoute
+  '/dashboard/surveys': typeof DashboardDashboardLayoutSurveysRoute
+  '/surveys/$surveyId/builder': typeof SurveysSurveyIdBuilderLazyRoute
+  '/surveys/$surveyId/success': typeof SurveysSurveyIdSuccessLazyRoute
+  '/dashboard/': typeof DashboardDashboardLayoutIndexRoute
+  '/surveys/$surveyId': typeof SurveysSurveyIdIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/notFound': typeof NotFoundRoute
+  '/notFound': typeof NotFoundLazyRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
-  '/surveys/$surveyId': typeof SurveysSurveyIdIndexRoute
+  '/dashboard': typeof DashboardDashboardLayoutIndexRoute
+  '/submit/$surveyUrl': typeof SubmitSurveyUrlRoute
+  '/dashboard/analytics': typeof DashboardDashboardLayoutAnalyticsRoute
+  '/dashboard/surveys': typeof DashboardDashboardLayoutSurveysRoute
+  '/surveys/$surveyId/builder': typeof SurveysSurveyIdBuilderLazyRoute
+  '/surveys/$surveyId/success': typeof SurveysSurveyIdSuccessLazyRoute
+  '/surveys/$surveyId': typeof SurveysSurveyIdIndexLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/notFound': typeof NotFoundRoute
+  '/notFound': typeof NotFoundLazyRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
-  '/surveys/$surveyId/': typeof SurveysSurveyIdIndexRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard/_dashboardLayout': typeof DashboardDashboardLayoutRouteWithChildren
+  '/submit/$surveyUrl': typeof SubmitSurveyUrlRoute
+  '/dashboard/_dashboardLayout/analytics': typeof DashboardDashboardLayoutAnalyticsRoute
+  '/dashboard/_dashboardLayout/surveys': typeof DashboardDashboardLayoutSurveysRoute
+  '/surveys/$surveyId/builder': typeof SurveysSurveyIdBuilderLazyRoute
+  '/surveys/$surveyId/success': typeof SurveysSurveyIdSuccessLazyRoute
+  '/dashboard/_dashboardLayout/': typeof DashboardDashboardLayoutIndexRoute
+  '/surveys/$surveyId/': typeof SurveysSurveyIdIndexLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -125,33 +310,67 @@ export interface FileRouteTypes {
     | '/notFound'
     | '/auth/login'
     | '/auth/signup'
+    | '/dashboard'
+    | '/submit/$surveyUrl'
+    | '/dashboard/analytics'
+    | '/dashboard/surveys'
+    | '/surveys/$surveyId/builder'
+    | '/surveys/$surveyId/success'
+    | '/dashboard/'
     | '/surveys/$surveyId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/notFound' | '/auth/login' | '/auth/signup' | '/surveys/$surveyId'
+  to:
+    | '/'
+    | '/notFound'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/dashboard'
+    | '/submit/$surveyUrl'
+    | '/dashboard/analytics'
+    | '/dashboard/surveys'
+    | '/surveys/$surveyId/builder'
+    | '/surveys/$surveyId/success'
+    | '/surveys/$surveyId'
   id:
     | '__root__'
     | '/'
     | '/notFound'
     | '/auth/login'
     | '/auth/signup'
+    | '/dashboard'
+    | '/dashboard/_dashboardLayout'
+    | '/submit/$surveyUrl'
+    | '/dashboard/_dashboardLayout/analytics'
+    | '/dashboard/_dashboardLayout/surveys'
+    | '/surveys/$surveyId/builder'
+    | '/surveys/$surveyId/success'
+    | '/dashboard/_dashboardLayout/'
     | '/surveys/$surveyId/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  NotFoundRoute: typeof NotFoundRoute
+  NotFoundLazyRoute: typeof NotFoundLazyRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthSignupRoute: typeof AuthSignupRoute
-  SurveysSurveyIdIndexRoute: typeof SurveysSurveyIdIndexRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
+  SubmitSurveyUrlRoute: typeof SubmitSurveyUrlRoute
+  SurveysSurveyIdBuilderLazyRoute: typeof SurveysSurveyIdBuilderLazyRoute
+  SurveysSurveyIdSuccessLazyRoute: typeof SurveysSurveyIdSuccessLazyRoute
+  SurveysSurveyIdIndexLazyRoute: typeof SurveysSurveyIdIndexLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  NotFoundRoute: NotFoundRoute,
+  NotFoundLazyRoute: NotFoundLazyRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthSignupRoute: AuthSignupRoute,
-  SurveysSurveyIdIndexRoute: SurveysSurveyIdIndexRoute,
+  DashboardRoute: DashboardRouteWithChildren,
+  SubmitSurveyUrlRoute: SubmitSurveyUrlRoute,
+  SurveysSurveyIdBuilderLazyRoute: SurveysSurveyIdBuilderLazyRoute,
+  SurveysSurveyIdSuccessLazyRoute: SurveysSurveyIdSuccessLazyRoute,
+  SurveysSurveyIdIndexLazyRoute: SurveysSurveyIdIndexLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -168,6 +387,10 @@ export const routeTree = rootRoute
         "/notFound",
         "/auth/login",
         "/auth/signup",
+        "/dashboard",
+        "/submit/$surveyUrl",
+        "/surveys/$surveyId/builder",
+        "/surveys/$surveyId/success",
         "/surveys/$surveyId/"
       ]
     },
@@ -175,7 +398,7 @@ export const routeTree = rootRoute
       "filePath": "index.tsx"
     },
     "/notFound": {
-      "filePath": "notFound.tsx"
+      "filePath": "notFound.lazy.tsx"
     },
     "/auth/login": {
       "filePath": "auth/login.tsx"
@@ -183,8 +406,44 @@ export const routeTree = rootRoute
     "/auth/signup": {
       "filePath": "auth/signup.tsx"
     },
+    "/dashboard": {
+      "filePath": "dashboard",
+      "children": [
+        "/dashboard/_dashboardLayout"
+      ]
+    },
+    "/dashboard/_dashboardLayout": {
+      "filePath": "dashboard/_dashboardLayout.tsx",
+      "parent": "/dashboard",
+      "children": [
+        "/dashboard/_dashboardLayout/analytics",
+        "/dashboard/_dashboardLayout/surveys",
+        "/dashboard/_dashboardLayout/"
+      ]
+    },
+    "/submit/$surveyUrl": {
+      "filePath": "submit/$surveyUrl.tsx"
+    },
+    "/dashboard/_dashboardLayout/analytics": {
+      "filePath": "dashboard/_dashboardLayout.analytics.tsx",
+      "parent": "/dashboard/_dashboardLayout"
+    },
+    "/dashboard/_dashboardLayout/surveys": {
+      "filePath": "dashboard/_dashboardLayout.surveys.tsx",
+      "parent": "/dashboard/_dashboardLayout"
+    },
+    "/surveys/$surveyId/builder": {
+      "filePath": "surveys/$surveyId/builder.lazy.tsx"
+    },
+    "/surveys/$surveyId/success": {
+      "filePath": "surveys/$surveyId/success.lazy.tsx"
+    },
+    "/dashboard/_dashboardLayout/": {
+      "filePath": "dashboard/_dashboardLayout.index.tsx",
+      "parent": "/dashboard/_dashboardLayout"
+    },
     "/surveys/$surveyId/": {
-      "filePath": "surveys/$surveyId/index.tsx"
+      "filePath": "surveys/$surveyId/index.lazy.tsx"
     }
   }
 }

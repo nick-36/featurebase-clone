@@ -58,7 +58,7 @@ function LoginPage() {
         toast.error(response?.error);
       } else {
         toast.success("Logged in successfully!");
-        navigate({ to: "/" });
+        navigate({ to: "/dashboard" });
       }
     } catch (err: any) {
       toast.error(err.message);

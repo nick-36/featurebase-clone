@@ -57,7 +57,7 @@ function SignupPage() {
       const response = await signUpNewUser.mutateAsync({ email, password });
       if (response.success) {
         toast.success("Signup successful!");
-        navigate({ to: "/" });
+        navigate({ to: "/dashboard" });
       } else {
         toast.error(response.error);
       }
