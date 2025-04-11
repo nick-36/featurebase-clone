@@ -21,32 +21,36 @@ const SurveyAnalytics = () => {
   const submissionsData =
     topSurveys?.mostSubmissions?.slice(0, 5).map((survey) => ({
       name:
-        survey.name && survey.name.length > 15
-          ? survey.name.substring(0, 15) + "..."
-          : survey.name || "Unnamed Survey",
+        survey.title && survey.title.length > 15
+          ? survey.title.substring(0, 15) + "..."
+          : survey.title || "Unnamed Survey",
       submissions: survey.submissions,
-      fullName: survey.name || "Unnamed Survey",
+      fullName: survey.title || "Unnamed Survey",
     })) || [];
 
   const conversionData =
     topSurveys?.highestConversion?.slice(0, 4).map((survey) => ({
       name:
-        survey.name && survey.name.length > 10
-          ? survey.name.substring(0, 10) + "..."
-          : survey.name || "Unnamed Survey",
+        survey.title && survey.title.length > 10
+          ? survey.title.substring(0, 10) + "..."
+          : survey.title || "Unnamed Survey",
       value: survey.conversionRate,
-      fullName: `${survey.name} (${survey.conversionRate.toFixed(1)}%)`,
+      fullName: `${survey.title} (${survey.conversionRate.toFixed(1)}%)`,
     })) || [];
 
   const visitsData =
     topSurveys?.mostVisits?.slice(0, 5).map((survey) => ({
       name:
-        survey.name && survey.name.length > 15
-          ? survey.name.substring(0, 15) + "..."
-          : survey.name || "Unnamed Survey",
+        survey.title && survey.title.length > 15
+          ? survey.title.substring(0, 15) + "..."
+          : survey.title || "Unnamed Survey",
       visits: survey.visits,
-      fullName: survey.name || "Unnamed Survey",
+      fullName: survey.title || "Unnamed Survey",
     })) || [];
+
+  console.log({
+    topSurveys,
+  });
 
   if (topError) {
     return (

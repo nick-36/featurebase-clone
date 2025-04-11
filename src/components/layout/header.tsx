@@ -5,8 +5,9 @@ import useAuthStore from "@/stores/authStore";
 import { useSession } from "@/hooks/auth";
 import UserAvatar from "@/components/layout/userAvatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { LayoutDashboard, ClipboardList, BarChart3, Menu } from "lucide-react";
+import { LayoutDashboard, ClipboardList, BarChart3, Menu, List } from "lucide-react";
 import { useState } from "react";
+import CreateSurveyBtn from "./createSurvey";
 
 const Header = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -84,7 +85,18 @@ const Header = () => {
       </Sheet>
       <Logo />
       {session ? (
-        <UserAvatar />
+        <>
+          <div className="flex gap-2">
+            <Button variant="outline" asChild>
+              <Link to="/dashboard/surveys">
+                <List className="h-4 w-4 mr-2" />
+                My Surveys
+              </Link>
+            </Button>
+            <CreateSurveyBtn btnView={true} />
+            <UserAvatar />
+          </div>
+        </>
       ) : (
         <>
           {showAuthButtons && (

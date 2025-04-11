@@ -17,10 +17,10 @@ import { useNavigate } from "@tanstack/react-router";
 
 const PublishFormBtn = ({
   surveyId,
-  isPublishable,
+  isPublishable = true,
 }: {
   surveyId: string;
-  isPublishable: boolean;
+  isPublishable?: boolean;
 }) => {
   const [loading, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);

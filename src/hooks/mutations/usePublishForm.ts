@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { publishForm } from "@/services/surveyService";
+import { publishSurvey } from "@/services/surveyServiceV2";
 import { queryClient, queryKeys } from "@/lib/queryClient";
 
 export function usePublishForm({
@@ -11,7 +11,7 @@ export function usePublishForm({
   onSuccessCallback?: () => void;
 }) {
   return useMutation({
-    mutationFn: () => publishForm(surveyId),
+    mutationFn: () => publishSurvey(surveyId),
     onSuccess: () => {
       toast.success("Form Published Successfully!");
       queryClient.invalidateQueries({

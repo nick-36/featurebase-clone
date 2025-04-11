@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import CreateSurveyBtn from "./createSurvey";
 import { useSurveys } from "@/hooks/queries";
-import { useIntersectionObserver } from "@/hooks/utils";
 import { ErrorDisplay } from "./errorDisplay";
 
 export const SurveyCardSkeleton = () => {
@@ -26,43 +25,17 @@ export const SurveyCardSkeleton = () => {
 };
 
 const SurveyList = ({
-  limit,
   showCreteSurvey = true,
-  lazyLoad = true,
 }: {
-  limit?: number;
   showCreteSurvey?: boolean;
-  lazyLoad?: boolean;
 }) => {
   const createSurveyRef = useRef<HTMLDivElement | null>(null);
 
-  const {
-    data,
-    isLoading,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useSurveys({ pageSize: 10 });
+  const { data: surveys, isLoading, error } = useSurveys();
 
-  const surveys = data?.pages?.flatMap((page) => page.surveys) || [];
-
-  // 🔁 Handle load more only when lazyLoad is enabled
-  const loadMore = () => {
-    if (lazyLoad && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  };
-
-  const loadMoreRef = useIntersectionObserver(loadMore, {
-    rootMargin: "100px",
-    threshold: 0,
-  });
+  console.log(surveys, "SURVEYS");
 
   if (error) return <ErrorDisplay error={error} />;
-
-  // 🔒 Use limit only when lazyLoad is false
-  const visibleSurveys = !lazyLoad && limit ? surveys.slice(0, limit) : surveys;
 
   return (
     <div
@@ -73,38 +46,35 @@ const SurveyList = ({
       <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
         {showCreteSurvey && <CreateSurveyBtn />}
 
-        {visibleSurveys.map((survey) => (
+        {surveys?.map((survey) => (
           <SurveyCard
             key={survey.id}
             id={survey.id}
-            name={survey.name}
+            name={survey.title}
             description={survey.description}
             shareURL={survey.share_url}
             createdAt={survey.created_at}
             responseCount={survey.submissions}
-            isPublished={survey.published}
+            isPublished={survey.is_published}
           />
         ))}
 
-        {/* Only show skeletons if lazy loading is on */}
-        {lazyLoad &&
-          isLoading &&
-          surveys.length === 0 &&
+        {isLoading &&
           Array(5)
             .fill(0)
             .map((_, index) => <SurveyCardSkeleton key={`initial-${index}`} />)}
 
-        {lazyLoad &&
+        {/* {lazyLoad &&
           isFetchingNextPage &&
           Array(3)
             .fill(0)
-            .map((_, index) => <SurveyCardSkeleton key={`next-${index}`} />)}
+            .map((_, index) => <SurveyCardSkeleton key={`next-${index}`} />)} */}
       </ul>
 
       {/* Only attach loadMoreRef if lazy loading is enabled */}
-      {lazyLoad && hasNextPage && (
+      {/* {lazyLoad && hasNextPage && (
         <div ref={loadMoreRef} className="h-10 w-full mt-4" />
-      )}
+      )} */}
     </div>
   );
 };

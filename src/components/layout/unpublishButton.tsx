@@ -16,10 +16,10 @@ import { useUnpublishSurvey } from "@/hooks/mutations/useUnpublishSurvey";
 
 const UnpublishButton = ({
   surveyId,
-  isPublished,
+  isPublished = false,
 }: {
   surveyId: string;
-  isPublished: boolean;
+  isPublished: boolean | null;
 }) => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();

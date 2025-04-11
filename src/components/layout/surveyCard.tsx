@@ -18,9 +18,9 @@ type SurveyCardProps = {
   name: string | null;
   description?: string | null;
   shareURL: string | null;
-  createdAt: string;
-  isPublished: boolean;
-  responseCount: number;
+  createdAt: string | null;
+  isPublished: boolean | null;
+  responseCount: number | null;
 };
 
 const SurveyCard: React.FC<SurveyCardProps> = ({
@@ -67,7 +67,8 @@ const SurveyCard: React.FC<SurveyCardProps> = ({
         <div className="flex items-center justify-between h-full">
           <div className="flex items-center text-xs text-muted-foreground">
             <div>
-              Created on {new Date(createdAt).toLocaleDateString()}{" "}
+              Created on{" "}
+              {createdAt ? new Date(createdAt).toLocaleDateString() : ""}
               {isPublished && (
                 <>
                   | {responseCount} response{responseCount !== 1 ? "s" : ""}
@@ -104,7 +105,7 @@ const SurveyCard: React.FC<SurveyCardProps> = ({
                 size="sm"
                 asChild
               >
-                <Link to="/surveys/$surveyId/builder" params={{ surveyId: id }}>
+                <Link to="/builder/$surveyId" params={{ surveyId: id }}>
                   <Pencil className="w-4 h-4 cursor-pointer" />
                 </Link>
               </Button>

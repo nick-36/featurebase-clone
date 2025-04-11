@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createSurvey } from "@/services/surveyService";
+import { createSurvey } from "@/services/surveyServiceV2";
 import { toast } from "sonner";
 import { queryKeys } from "@/lib/queryClient";
 
@@ -20,9 +20,6 @@ export const useCreateSurvey = ({
         queryClient.resetQueries({
           queryKey: queryKeys.surveys.all,
         });
-        document
-          .getElementById("create-survey-section")
-          ?.scrollIntoView({ behavior: "smooth" });
       } else {
         queryClient.invalidateQueries({ queryKey: queryKeys.surveys.all });
       }

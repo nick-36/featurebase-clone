@@ -1,25 +1,24 @@
 import { useCallback, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
-import { useBuilder } from "@/stores/builderStore";
-import { updateSurveyContent } from "@/services/surveyService";
 import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";
+import { saveSurvey } from "@/services/surveyServiceV2";
+import { useSurveyBuilder } from "@/stores/surveyBuilderStore";
 
-const SaveFormBtn = ({ surveyId }: { surveyId: string }) => {
-  const elements = useBuilder((state) => state.elements);
+const SaveFormBtn = () => {
+  const { survey } = useSurveyBuilder((state) => state);
   const [loading, startTransition] = useTransition();
 
   const updateFormContent: () => void = useCallback(async () => {
     try {
-      const jsonElement = JSON.stringify(elements);
-      await updateSurveyContent(surveyId, jsonElement);
+      await saveSurvey(survey);
       toast.success("Survey saved successfully!");
     } catch (error) {
       console.log(error);
       toast.error("something went wront!");
     }
-  }, [surveyId, elements]);
+  }, [survey]);
 
   return (
     <Button

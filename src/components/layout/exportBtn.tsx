@@ -5,7 +5,7 @@ import { format } from "date-fns";
 
 interface Answer {
   questionId: string;
-  questionLabel: string;
+  questionTitle: string;
   questionType: string;
   answer?: string;
 }
@@ -14,6 +14,7 @@ interface Submission {
   id: string;
   submittedAt?: Date;
   answers: Answer[];
+  title: string;
 }
 
 const ExportButton = ({ submissions }: { submissions?: Submission[] }) => {
@@ -23,21 +24,26 @@ const ExportButton = ({ submissions }: { submissions?: Submission[] }) => {
       return;
     }
 
-    // Extract all unique question labels
-    const questionLabels = Array.from(
+    // Extract all unique question titles
+    const questionTitles = Array.from(
       new Set(
         submissions.flatMap((submission) =>
-          submission.answers.map((ans) => ans.questionLabel)
+          submission.answers.map((ans) => ans.questionTitle)
         )
       )
     );
 
-    const headers = ["Submission ID", "Submitted At", ...questionLabels];
+    const headers = [
+      "Submission ID",
+      "Title",
+      "Submitted At",
+      ...questionTitles,
+    ];
 
     // Properly escape CSV values
     const escapeCSV = (value: string) => {
       // If value contains commas, quotes, or newlines, wrap in quotes and escape any quotes
-      const needsQuotes = /[",\n\r]/.test(value);
+      const needsQuotes = /[",\n\r]/.test(String(value));
       const escaped = String(value).replace(/"/g, '""');
       return needsQuotes ? `"${escaped}"` : escaped;
     };
@@ -46,7 +52,7 @@ const ExportButton = ({ submissions }: { submissions?: Submission[] }) => {
       // Create an answer map for easy lookup
       const answerMap: Record<string, string> = {};
       submission.answers.forEach((ans) => {
-        answerMap[ans.questionLabel] = ans.answer ?? "";
+        answerMap[ans.questionTitle] = ans.answer ?? "";
       });
 
       // Format the date
@@ -58,8 +64,9 @@ const ExportButton = ({ submissions }: { submissions?: Submission[] }) => {
       // Build the row with proper CSV escaping
       const rowData = [
         escapeCSV(submission.id),
+        escapeCSV(submission.title || ""),
         escapeCSV(formattedDate),
-        ...questionLabels.map((label) => escapeCSV(answerMap[label] || "")),
+        ...questionTitles.map((title) => escapeCSV(answerMap[title] || "")),
       ];
 
       return rowData.join(",");
@@ -77,7 +84,6 @@ const ExportButton = ({ submissions }: { submissions?: Submission[] }) => {
     link.click();
     window.URL.revokeObjectURL(url);
   };
-
   return (
     <div className="flex items-center gap-2">
       <Button

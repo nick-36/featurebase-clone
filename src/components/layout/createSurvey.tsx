@@ -55,7 +55,7 @@ const CreateSurveyBtn = ({ btnView = false }: { btnView?: boolean }) => {
     if (!session?.user?.id) return toast.error("User not logged in");
 
     mutate({
-      name: values.name,
+      title: values.name,
       description: values.description,
     });
   };

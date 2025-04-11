@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { unpublishSurvey } from "@/services/surveyService";
+import { unpublishSurvey } from "@/services/surveyServiceV2";
 import { queryKeys } from "@/lib/queryClient";
 
 export const useUnpublishSurvey = () => {

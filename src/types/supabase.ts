@@ -77,6 +77,115 @@ export type Database = {
         }
         Relationships: []
       }
+      survey_responses: {
+        Row: {
+          created_at: string | null
+          id: string
+          question_id: string
+          submission_id: string
+          value: Json | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          question_id: string
+          submission_id: string
+          value?: Json | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          question_id?: string
+          submission_id?: string
+          value?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_responses_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "survey_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      survey_submissions: {
+        Row: {
+          content: Json | null
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          respondent_id: string | null
+          survey_id: string
+        }
+        Insert: {
+          content?: Json | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          respondent_id?: string | null
+          survey_id: string
+        }
+        Update: {
+          content?: Json | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          respondent_id?: string | null
+          survey_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_submissions_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: false
+            referencedRelation: "surveys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      surveys: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_published: boolean | null
+          pages: Json | null
+          share_url: string | null
+          submissions: number | null
+          title: string
+          updated_at: string | null
+          user_id: string
+          visits: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          pages?: Json | null
+          share_url?: string | null
+          submissions?: number | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+          visits?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          pages?: Json | null
+          share_url?: string | null
+          submissions?: number | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+          visits?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -91,6 +200,20 @@ export type Database = {
         Returns: {
           submission_date: string
           submission_count: number
+        }[]
+      }
+      get_user_survey_stats: {
+        Args: { p_user_id: string }
+        Returns: Json
+      }
+      increment_survey_visit_count: {
+        Args: { survey_url: string }
+        Returns: {
+          id: string
+          pages: Json
+          visits: number
+          is_published: boolean
+          share_url: string
         }[]
       }
       increment_visit_count: {
