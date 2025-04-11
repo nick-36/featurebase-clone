@@ -1,34 +1,6 @@
 import Header from "@/components/layout/header";
-// import { Outlet, createRootRoute } from "@tanstack/react-router";
-// import NotFoundComponent from "@/components/layout/notFound";
-// import { ErrorDisplay } from "@/components/layout/errorDisplay";
 
-// export const Route = createRootRoute({
-//   component: RootComponent,
-//   errorComponent: ErrorDisplay,
-//   notFoundComponent: NotFoundComponent,
-//   context: () => ({
-//     header: {
-//       showAuthButtons: true,
-//     },
-//   }),
-// });
-
-// function RootComponent() {
-//   return (
-//     <>
-//       <Header />
-//       <Outlet />
-//     </>
-//   );
-// }
-
-// src/routes/__root.tsx
 import { createRootRoute, Outlet } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
-
-import Logo from "@/components/ui/logo";
-import UserAvatar from "@/components/layout/userAvatar";
 
 export const Route = createRootRoute({
   component: () => (
