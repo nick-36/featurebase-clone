@@ -19,6 +19,7 @@ import {
 export function ConversionRatesChart({
   conversionData = [] as { name: string; value: number }[],
 }) {
+  console.log(conversionData, "TOP DATA");
   const CHART_COLORS = [
     "hsl(var(--chart-1))",
     "hsl(var(--chart-2))",

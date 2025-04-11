@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getSurveyById } from "@/services/surveyService";
+import { getSurveyById } from "@/services/surveyServiceV2";
 import { queryKeys } from "@/lib/queryClient";
 
 interface UseSurveyByIdProps {

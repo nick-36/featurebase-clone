@@ -1,6 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
 import { formatDistance } from "date-fns";
-import { FormElementInstance } from "@/types/formElement";
 import {
   CardContent,
   CardHeader,
@@ -27,18 +26,48 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import { isQuestionElement } from "@/lib/utils";
-
-type SubmittedSurvey = {
-  form_submission: SurveySubmission[];
-} & Survey;
 
 type FilterOption = {
   field: string;
   value: string;
 };
 
-type Answer = { questionLabel: string; questionType: string; answer: string };
+type Question = {
+  id: string;
+  type: "text" | "multiChoice" | "rating" | "link";
+  title: string;
+  required: boolean;
+  nextAction: "nextPage" | "endSurvey";
+  description?: string;
+  placeholder?: string;
+  options?: string[];
+};
+
+type Page = {
+  id: string;
+  questions: Question[];
+};
+
+type SubmittedSurveys = {
+  content: JSON | null;
+  created_at: string | null;
+  id: string;
+  metadata: JSON | null;
+  respondent_id: string | null;
+  survey_id: string;
+};
+
+type SubmittedSurvey = Partial<SurveyV2> & {
+  survey_submissions: SubmittedSurveys[];
+  pages: [];
+};
+
+type Answer = {
+  questionId: string;
+  questionTitle: string;
+  questionType: string;
+  answer: string;
+};
 
 const SubmissionDashboard = ({
   submittedSurvey,
@@ -52,34 +81,69 @@ const SubmissionDashboard = ({
   const [activeFilters, setActiveFilters] = useState<FilterOption[]>([]);
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-  const formElements = useMemo(() => {
-    return typeof submittedSurvey?.content === "string"
-      ? (JSON.parse(submittedSurvey?.content) as FormElementInstance[])
-      : [];
-  }, [submittedSurvey?.content]);
-
   const questionElements = useMemo(() => {
-    if (!Array.isArray(formElements)) return [];
+    const allQuestions: {
+      id: string;
+      title: string;
+      type: string;
+    }[] = [];
 
-    return formElements.filter((el) => isQuestionElement(el.type));
-  }, [formElements]);
+    submittedSurvey?.pages?.forEach((page: Page) => {
+      if (Array.isArray(page.questions)) {
+        allQuestions.push(...page.questions);
+      }
+    });
+    return allQuestions;
+  }, []);
 
   const rows = useMemo(() => {
-    return Array.isArray(submittedSurvey?.form_submission)
-      ? submittedSurvey.form_submission.map((submission, index) => {
-          const parsed =
-            typeof submission?.content === "string"
-              ? JSON.parse(submission.content)
-              : {};
-          return {
-            id: `submission-${index}`,
-            answers: parsed.answers || [],
-            submittedAt: new Date(parsed.submittedAt || submission.created_at),
-            title: parsed.title,
-          };
-        })
-      : [];
-  }, [submittedSurvey?.form_submission]);
+    if (!Array.isArray(submittedSurvey.survey_submissions)) return [];
+
+    return submittedSurvey.survey_submissions.map(
+      (submission: any, index: number) => {
+        const submissionResponses = submission.survey_responses?.filter(
+          (r: SurveyResponsesV2) => r.submission_id === submission.id
+        );
+
+        const answers = submissionResponses.map(
+          (response: SurveyResponsesV2) => {
+            const question = questionElements.find(
+              (q) => q.id === response.question_id
+            );
+
+            // Parse the response value - removing extra quotes
+            let parsedValue = response.value;
+            try {
+              // If it's a JSON string with quotes, parse it
+              if (
+                typeof response.value === "string" &&
+                response.value.startsWith('"') &&
+                response.value.endsWith('"')
+              ) {
+                parsedValue = JSON.parse(response.value);
+              }
+            } catch (e) {
+              parsedValue = response.value;
+            }
+
+            return {
+              questionId: response.question_id,
+              questionTitle: question?.title || "Unnamed Question",
+              questionType: question?.type || "text",
+              answer: parsedValue || "-",
+            };
+          }
+        );
+
+        return {
+          id: submission.id || `submission-${index}`,
+          answers,
+          submittedAt: new Date(submission.created_at),
+          title: `Response #${index + 1}`,
+        };
+      }
+    );
+  }, []);
 
   const addFilter = useCallback(() => {
     if (!debouncedSearchTerm.trim()) return;
@@ -116,67 +180,58 @@ const SubmissionDashboard = ({
     }
   };
 
+  //   const getFieldLabel = (fieldId: string) => {
+  //     if (fieldId === "all") return "All fields";
+  //     const element = questionElements.find((el) => el.id === fieldId);
+  //     return element?.extraAttributes?.label || "Unnamed field";
+  //   };
   const getFieldLabel = (fieldId: string) => {
     if (fieldId === "all") return "All fields";
     const element = questionElements.find((el) => el.id === fieldId);
-    return element?.extraAttributes?.label || "Unnamed field";
+    return element?.title || "Unnamed field";
   };
 
   const displayedRows = useMemo(() => {
-    if (!Array.isArray(rows)) return [];
-
     let processedRows = [...rows];
 
     if (activeFilters.length > 0) {
-      processedRows = processedRows.filter((row) => {
-        return activeFilters.every((filter) => {
-          // If filter is for all fields
+      processedRows = processedRows.filter((row) =>
+        activeFilters.every((filter) => {
           if (filter.field === "all") {
-            // Make sure row.answers exists and is an array
-            return (
-              Array.isArray(row.answers) &&
-              row.answers.some(
-                (ans) =>
-                  ans.answer
-                    ?.toLowerCase()
-                    .includes(filter.value.toLowerCase()) ||
-                  ans.questionLabel
-                    ?.toLowerCase()
-                    .includes(filter.value.toLowerCase())
-              )
+            return row.answers.some(
+              (ans: Answer) =>
+                String(ans.answer)
+                  .toLowerCase()
+                  .includes(filter.value.toLowerCase()) ||
+                ans.questionTitle
+                  .toLowerCase()
+                  .includes(filter.value.toLowerCase())
             );
           }
-
-          // Filter by specific field
-          const answer = Array.isArray(row.answers)
-            ? row.answers.find((ans) => ans.questionId === filter.field)
-            : undefined;
-          if (!answer) return false;
-
-          return answer.answer
+          const answer = row.answers.find(
+            (ans: Answer) => ans.questionId === filter.field
+          );
+          return answer?.answer
             ?.toLowerCase()
             .includes(filter.value.toLowerCase());
-        });
-      });
+        })
+      );
     }
 
     if (debouncedSearchTerm) {
-      processedRows = processedRows.filter((row) => {
-        if (!Array.isArray(row.answers)) return false;
-
-        return row.answers.some(
-          (ans) =>
-            ans.answer
-              ?.toLowerCase()
+      processedRows = processedRows.filter((row) =>
+        row.answers.some(
+          (ans: Answer) =>
+            String(ans.answer)
+              .toLowerCase()
               .includes(debouncedSearchTerm.toLowerCase()) ||
-            ans.questionLabel
-              ?.toLowerCase()
+            ans.questionTitle
+              .toLowerCase()
               .includes(debouncedSearchTerm.toLowerCase())
-        );
-      });
+        )
+      );
     }
 
-    // Sort the filtered rows
     return processedRows.sort((a, b) => {
       if (sortField === "submittedAt") {
         return sortDirection === "asc"
@@ -184,17 +239,16 @@ const SubmissionDashboard = ({
           : b.submittedAt.getTime() - a.submittedAt.getTime();
       }
 
-      // Sort by answer value for specific question
-      const aAnswer = Array.isArray(a.answers)
-        ? a.answers.find((ans) => ans.questionId === sortField)?.answer || ""
-        : "";
-      const bAnswer = Array.isArray(b.answers)
-        ? b.answers.find((ans) => ans.questionId === sortField)?.answer || ""
-        : "";
+      const aAnswer =
+        a.answers.find((ans: Answer) => ans.questionId === sortField)?.answer ||
+        "";
+      const bAnswer =
+        b.answers.find((ans: Answer) => ans.questionId === sortField)?.answer ||
+        "";
 
       return sortDirection === "asc"
-        ? aAnswer.localeCompare(bAnswer)
-        : bAnswer.localeCompare(aAnswer);
+        ? String(aAnswer).localeCompare(String(bAnswer))
+        : String(bAnswer).localeCompare(String(aAnswer));
     });
   }, [rows, sortField, sortDirection, activeFilters, debouncedSearchTerm]);
 
@@ -338,7 +392,7 @@ const SubmissionDashboard = ({
                         .map((ans: Answer, idx: number) => (
                           <div key={idx} className="max-w-xs">
                             <p className="text-xs text-muted-foreground">
-                              {ans.questionLabel}
+                              {ans.questionTitle}
                             </p>
                             <p className="text-sm font-medium truncate w-32">
                               {ans.questionType === "CheckboxField"
@@ -360,7 +414,7 @@ const SubmissionDashboard = ({
                         className="bg-slate-50 dark:bg-slate-800 p-3 rounded-md"
                       >
                         <p className="text-sm font-medium text-muted-foreground">
-                          {ans.questionLabel}
+                          {ans.questionTitle}
                         </p>
                         {ans.questionType === "CheckboxField" ? (
                           <div className="mt-2">

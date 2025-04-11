@@ -74,7 +74,7 @@ const SurveyBuilder = ({ survey }: { survey: Survey }) => {
             </Suspense>
             {!survey?.published && (
               <>
-                <SaveFormBtn surveyId={survey?.id} />
+                <SaveFormBtn />
                 <PublishFormBtn
                   surveyId={survey?.id}
                   isPublishable={elements.length > 0}

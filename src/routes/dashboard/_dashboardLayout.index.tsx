@@ -16,9 +16,20 @@ import { useEffect } from "react";
 import { BarChart, Activity, Mail } from "lucide-react";
 import { StatsCard } from "@/components/layout/statsCard";
 import SurveyList from "@/components/layout/surveyList";
+import { useQuery } from "@tanstack/react-query";
+import { getUserSurveyStats } from "@/services/surveyServiceV2";
+import { ErrorDisplay } from "@/components/layout/errorDisplay";
 
 function DashboardPage() {
   const { setLayoutConfig } = useLayoutContext();
+  const {
+    data: stats,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["userSurveyStats"],
+    queryFn: getUserSurveyStats,
+  });
 
   // Set layout configuration for this route
   useEffect(() => {
@@ -29,13 +40,11 @@ function DashboardPage() {
     });
   }, [setLayoutConfig]);
 
-  const stats = {
-    totalSurveys: 23,
-    activeSurveysLastMonth: 2,
-    responsesLastMonth: 45,
-  };
+  console.log(stats, "SURVEY Stas");
 
-  const isLoading = false;
+  if (error) {
+    return <ErrorDisplay error={error} />;
+  }
 
   return (
     <div className="p-4 md:p-6">
@@ -52,7 +61,7 @@ function DashboardPage() {
         <StatsCard
           title="Active Surveys"
           description={`+${stats?.activeSurveysLastMonth || 0} from last month`}
-          statValue="5"
+          statValue={stats?.activeSurveysLastMonth?.toString()}
           loading={isLoading}
           icon={<Activity className="h-5 w-5" />}
         />
@@ -60,7 +69,7 @@ function DashboardPage() {
         <StatsCard
           title="Responses"
           description={`+${stats?.responsesLastMonth || 0} from last month`}
-          statValue="125"
+          statValue={stats?.responsesLastMonth?.toString()}
           loading={isLoading}
           icon={<Mail className="h-5 w-5" />}
         />
@@ -72,7 +81,7 @@ function DashboardPage() {
             <CardDescription>Your recently created surveys</CardDescription>
           </CardHeader>
           <CardContent>
-            <SurveyList limit={5} lazyLoad={false} />
+            <SurveyList />
           </CardContent>
         </Card>
       </div>
