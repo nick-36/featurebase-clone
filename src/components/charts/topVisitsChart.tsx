@@ -27,7 +27,6 @@ export function TopVisitsChart({
 }: {
   visitsData: VisitData[];
 }) {
-  // Take only top 7 items to reduce clutter if there are too many
   const displayData =
     visitsData.length > 7
       ? [...visitsData].sort((a, b) => b.visits - a.visits).slice(0, 7)
@@ -108,10 +107,14 @@ export function TopVisitsChart({
                 }}
               />
               <Legend
-                wrapperStyle={{ paddingTop: 10 }}
                 formatter={(value) => (
                   <span className="text-sm font-medium">{value}</span>
                 )}
+                wrapperStyle={{
+                  paddingTop: 20,
+                  bottom: 0,
+                  lineHeight: "10px",
+                }}
               />
               <Area
                 type="monotone"

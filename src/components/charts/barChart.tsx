@@ -36,14 +36,16 @@ const BarChartComp = ({
         margin={{ top: 5, right: 20, left: 20, bottom: 40 }}
       >
         <CartesianGrid strokeDasharray="3 3" stroke={colors.border} />
+
         <XAxis
           dataKey="name"
           angle={-45}
           textAnchor="end"
-          height={60}
+          height={70}
           tick={{
             fill: colors.cardForeground,
             fontSize: 12,
+            dy: 10,
           }}
           tickLine={{ stroke: colors.border }}
           axisLine={{ stroke: colors.border }}
@@ -67,13 +69,19 @@ const BarChartComp = ({
             backgroundColor: colors.popover,
             color: colors.popoverForeground,
             border: `1px solid ${colors.border}`,
-            borderRadius: "0.5rem", // Using direct value instead of CSS variable
+            borderRadius: "0.5rem",
             boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
             padding: "0.75rem",
           }}
         />
         <Legend
-          wrapperStyle={{ paddingTop: 10 }}
+          verticalAlign="bottom"
+          align="center"
+          wrapperStyle={{
+            paddingTop: 20,
+            bottom: 0,
+            lineHeight: "10px",
+          }}
           formatter={(value) => (
             <span
               style={{
