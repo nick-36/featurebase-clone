@@ -7,15 +7,14 @@ export const useCreateSurvey = ({
   onSuccessCallback,
   shouldReset = false,
 }: {
-  onSuccessCallback?: () => void;
+  onSuccessCallback?: (data: SurveyV2) => void;
   shouldReset?: boolean;
 }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: createSurvey,
-    onSuccess: () => {
-      toast.success("New survey created successfully!");
+    onSuccess: (data) => {
       if (shouldReset) {
         queryClient.resetQueries({
           queryKey: queryKeys.surveys.all,
@@ -25,7 +24,8 @@ export const useCreateSurvey = ({
       }
 
       if (onSuccessCallback) {
-        onSuccessCallback();
+        onSuccessCallback(data);
+        toast.success("New survey created successfully!");
       }
     },
     onError: (error: ApiError) => {

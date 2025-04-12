@@ -31,10 +31,12 @@ import { toast } from "sonner";
 import { useSession } from "@/hooks/auth";
 import { useCreateSurvey } from "@/hooks/mutations";
 import { Plus } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 
 const CreateSurveyBtn = ({ btnView = false }: { btnView?: boolean }) => {
   const [open, setOpen] = useState(false);
   const { session } = useSession();
+  const navigate = useNavigate();
 
   const form = useForm<CreateSurveyFormSchemaType>({
     resolver: zodResolver(formSchema),
@@ -45,9 +47,15 @@ const CreateSurveyBtn = ({ btnView = false }: { btnView?: boolean }) => {
   });
 
   const { mutate, isPending } = useCreateSurvey({
-    onSuccessCallback: () => {
+    onSuccessCallback: (data) => {
       setOpen(false);
       form.reset();
+      navigate({
+        to: "/builder/$surveyId",
+        params: {
+          surveyId: data?.id,
+        },
+      });
     },
   });
 
