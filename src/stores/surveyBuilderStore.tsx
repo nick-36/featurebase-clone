@@ -26,6 +26,8 @@ export interface SurveyParsed extends BaseSurvey {
   pages: SurveyPage[];
 }
 
+type DeviceView = "desktop" | "tablet" | "mobile";
+
 // surveyStore.ts
 import { create } from "zustand";
 
@@ -33,6 +35,7 @@ interface SurveyState {
   survey: SurveyParsed;
   activePageIndex: number;
   activeView: "edit" | "preview";
+  deviceView: DeviceView;
 
   // Methods
   setSurvey: (survey: SurveyParsed) => void;
@@ -94,7 +97,7 @@ export const useSurveyBuilder = create<SurveyState>((set) => ({
   survey: getEmptySurvey(),
   activePageIndex: 0,
   activeView: "edit",
-
+  deviceView: "desktop",
   // Set the entire survey
   setSurvey: (newSurvey) => set({ survey: newSurvey }),
 

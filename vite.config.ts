@@ -41,6 +41,7 @@ export default defineConfig({
           tanstack: ["@tanstack/react-query", "@tanstack/react-router"],
 
           recharts: ["recharts"],
+          framer: ["framer-motion"],
 
           // Radix UI: Big set of composables, mostly needed for forms/dialogs
           radix: [
