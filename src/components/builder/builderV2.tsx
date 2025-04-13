@@ -187,8 +187,7 @@ export default function SurveyBuilder({
   };
 
   return (
-    <div className="container mx-auto py-4 px-0 md:px-2">
-      {/* Header Section */}
+    <div className="mx-4 py-4 px-0 md:px-2">
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold text-gray-800">
@@ -865,7 +864,7 @@ export default function SurveyBuilder({
 
           {/* Right Column - Browser Preview - Fixed position */}
           <div className="relative lg:h-screen">
-            <div className="lg:sticky lg:w-full h-screen pb-10 pt-4">
+            <div className="lg:sticky lg:w-full h-screen pb-10">
               <div className="h-full border border-gray-300 rounded-lg shadow-lg overflow-hidden flex flex-col">
                 {/* Browser Chrome UI */}
                 <div className="bg-gray-200 border-b border-gray-300 p-2 flex flex-col flex-shrink-0">
