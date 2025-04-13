@@ -1,5 +1,4 @@
 import { createFileRoute, Outlet, useMatches } from "@tanstack/react-router";
-import Header from "@/components/layout/header";
 import DesktopSidebar from "@/components/layout/dashboardSidebar";
 import {
   createContext,
