@@ -115,7 +115,7 @@ const Header = () => {
               <span className="sm:hidden">Surveys</span>
             </Link>
           </Button>
-          <div className="hidden xs:block">
+          <div className="hidden xs:block md:block">
             <CreateSurveyBtn btnView={true} />
           </div>
           <UserAvatar />
@@ -132,7 +132,7 @@ const Header = () => {
                   Login
                 </Button>
               </Link>
-              <Link to="/auth/signup" className="hidden xs:block">
+              <Link to="/auth/signup" className="hidden xs:block md:block">
                 <Button
                   variant="secondary"
                   size="sm"
