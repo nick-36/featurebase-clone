@@ -202,7 +202,6 @@ export async function saveSurveyResponses(
   responses: SurveyResponse[]
 ): Promise<void> {
   // Step 1: Insert submission, let Supabase handle UUID
-  console.log(responses, "Responses");
   const { data: insertedSubmission, error: submissionError } = await supabase
     .from("survey_submissions")
     .insert({ survey_id: surveyId, created_at: new Date().toISOString() })

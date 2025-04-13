@@ -48,10 +48,6 @@ const SurveyAnalytics = () => {
       fullName: survey.title || "Unnamed Survey",
     })) || [];
 
-  console.log({
-    topSurveys,
-  });
-
   if (topError) {
     return (
       <div className="p-4 text-red-500">

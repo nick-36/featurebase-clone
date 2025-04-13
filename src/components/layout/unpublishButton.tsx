@@ -31,7 +31,7 @@ const UnpublishButton = ({
       {
         onSuccess: () => {
           setOpen(false);
-          navigate({ to: "/" });
+          navigate({ to: "/dashboard" });
         },
       }
     );

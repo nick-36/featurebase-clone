@@ -22,12 +22,10 @@ const SurveyDetailComp = () => {
     error: surveyError,
   } = useSurveyById({ surveyId });
 
-  console.log(survey, "SURVEY");
 
   const { data: submittedSurvey, isLoading: submissionsLoading } =
     useSurveysWithSubmissions({ surveyId });
 
-  console.log(submittedSurvey, "SURVEY");
 
   if (surveyLoading || submissionsLoading) {
     return <DefaultPendingSkeleton />;

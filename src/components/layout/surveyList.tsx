@@ -33,8 +33,6 @@ const SurveyList = ({
 
   const { data: surveys, isLoading, error } = useSurveys();
 
-  console.log(surveys, "SURVEYS");
-
   if (error) return <ErrorDisplay error={error} />;
 
   return (

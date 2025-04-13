@@ -36,7 +36,6 @@ function RouteComponent() {
     return <p className="text-gray-500 text-center">Survey not found</p>;
   }
 
-  console.log(survey, "SURVEY");
 
   const shareURL = `${getBaseURL()}/submit/${survey?.share_url}`;
 

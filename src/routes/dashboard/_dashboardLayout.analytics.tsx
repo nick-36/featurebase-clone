@@ -12,6 +12,10 @@ function AnalyticsPage() {
       showHeader: false,
       showSidebar: true,
       headerProps: { title: "Analytics" },
+      breadcrumbItems: [
+        { label: "Dashboard", href: "/dashboard" },
+        { label: "analytics" },
+      ],
     });
   }, [setLayoutConfig]);
 

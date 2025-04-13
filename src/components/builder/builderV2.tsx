@@ -21,6 +21,10 @@ import {
   Laptop,
   MonitorCheck,
   Smartphone,
+  MessageSquare,
+  ListChecks,
+  Star,
+  Link,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
@@ -28,6 +32,8 @@ import { Label } from "@/components/ui/label";
 import PublishFormBtn from "./publishFormBtn";
 import SaveFormBtn from "./saveFormBtn";
 import { SurveyParsed, useSurveyBuilder } from "@/stores/surveyBuilderStore";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { cn } from "@/lib/utils";
 
 type QuestionType = "text" | "multiChoice" | "rating" | "link";
 type NextAction = "nextPage" | "endSurvey";
@@ -162,19 +168,13 @@ export default function SurveyBuilder({
     }),
   };
 
-  // // Get device icon based on selected device view
-  // const getDeviceIcon = () => {
-  //   switch (deviceView) {
-  //     case "mobile":
-  //       return <Smartphone className="h-4 w-4" />;
-  //     case "tablet":
-  //       return <Laptop className="h-4 w-4" />;
-  //     default:
-  //       return <MonitorCheck className="h-4 w-4" />;
-  //   }
-  // };
+  const questionTypes = [
+    { value: "text", label: "Text", icon: MessageSquare },
+    { value: "multiChoice", label: "Multiple Choice", icon: ListChecks },
+    { value: "rating", label: "Rating", icon: Star },
+    { value: "link", label: "Link", icon: Link },
+  ];
 
-  // Get device width class based on selected device view
   const getDeviceWidthClass = () => {
     switch (deviceView) {
       case "mobile":
@@ -561,9 +561,9 @@ export default function SurveyBuilder({
                               <Card className="shadow-sm border border-gray-200 hover:border-gray-300 transition-colors">
                                 <CardHeader className="pb-2 pt-3 px-4">
                                   <div className="flex justify-between items-center">
-                                    <Select
+                                    <RadioGroup
                                       value={question.type}
-                                      onValueChange={(value: QuestionType) =>
+                                      onValueChange={(value) =>
                                         updateQuestion(
                                           pageIndex,
                                           questionIndex,
@@ -571,25 +571,36 @@ export default function SurveyBuilder({
                                           value
                                         )
                                       }
+                                      className="flex space-x-2"
                                     >
-                                      <SelectTrigger className="w-40 h-8 text-sm">
-                                        <SelectValue placeholder="Question Type" />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        <SelectItem value="text">
-                                          Text
-                                        </SelectItem>
-                                        <SelectItem value="multiChoice">
-                                          Multiple Choice
-                                        </SelectItem>
-                                        <SelectItem value="rating">
-                                          Rating
-                                        </SelectItem>
-                                        <SelectItem value="link">
-                                          Link
-                                        </SelectItem>
-                                      </SelectContent>
-                                    </Select>
+                                      {questionTypes.map((type) => {
+                                        const Icon = type.icon;
+                                        return (
+                                          <div key={type.value}>
+                                            <Label
+                                              htmlFor={`type-${type.value}`}
+                                              className={cn(
+                                                "flex items-center justify-center h-8 px-3 rounded-md border text-sm cursor-pointer transition-all",
+                                                question.type === type.value
+                                                  ? "border-primary bg-primary/5 text-primary font-medium"
+                                                  : "border-gray-200 hover:bg-gray-50"
+                                              )}
+                                            >
+                                              <RadioGroupItem
+                                                id={`type-${type.value}`}
+                                                value={type.value}
+                                                className="sr-only"
+                                              />
+                                              <Icon className="mr-1 h-3 w-3" />
+                                              <span className="text-xs">
+                                                {type.label}
+                                              </span>
+                                            </Label>
+                                          </div>
+                                        );
+                                      })}
+                                    </RadioGroup>
+
                                     <Button
                                       onClick={() =>
                                         deleteQuestion(pageIndex, questionIndex)
@@ -755,7 +766,8 @@ export default function SurveyBuilder({
                                         Scale Type
                                       </label>
                                       <Select
-                                        value={question.placeholder || "5"}
+                                        value={question?.placeholder ?? "5"}
+                                        defaultValue="5"
                                         onValueChange={(value) =>
                                           updateQuestion(
                                             pageIndex,

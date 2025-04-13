@@ -37,10 +37,9 @@ function DashboardPage() {
       showHeader: false,
       showSidebar: true,
       headerProps: { title: "Dashboard" },
+      breadcrumbItems: [{ label: "Dashboard", href: "/dashboard" }],
     });
   }, [setLayoutConfig]);
-
-  console.log(stats, "SURVEY Stas");
 
   if (error) {
     return <ErrorDisplay error={error} />;
