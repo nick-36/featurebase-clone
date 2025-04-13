@@ -460,9 +460,9 @@ export default function SurveyBuilder({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="relative z-0 flex flex-1 gap-2 max-h-screen">
           {/* Left Column - Form Builder - Scrollable independently */}
-          <div className="flex flex-col gap-6 max-h-screen overflow-y-auto pb-6">
+          <div className="relative flex flex-col gap-4 z-0 w-1/2 flex-1 overflow-y-auto bg-slate-50 focus:outline-none">
             {/* Survey Metadata Card */}
             <Card className="shadow-sm">
               <CardHeader className="pb-3 border-b">
@@ -498,8 +498,8 @@ export default function SurveyBuilder({
                 </div>
               </CardContent>
             </Card>
-
             {/* Survey Pages Card */}
+
             <Card className="flex-1 shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between pb-3 border-b">
                 <CardTitle className="text-lg">Survey Pages</CardTitle>
@@ -518,24 +518,28 @@ export default function SurveyBuilder({
                   onValueChange={(value) => setActivePageIndex(parseInt(value))}
                   className="w-full"
                 >
-                  <TabsList className="mb-4 w-full grid grid-cols-4 sm:grid-cols-6 gap-1">
-                    {survey?.pages?.map((page, index) => (
-                      <TabsTrigger
-                        key={page.id}
-                        value={index.toString()}
-                        className="text-sm"
-                      >
-                        Page {index + 1}
-                      </TabsTrigger>
-                    ))}
-                  </TabsList>
+                  <div className="flex items-center mb-4">
+                    <div className="overflow-x-auto flex-1 scrollbar-hide">
+                      <TabsList className="w-max inline-flex">
+                        {survey?.pages?.map((page, index) => (
+                          <TabsTrigger
+                            key={page.id}
+                            value={index.toString()}
+                            className="text-sm whitespace-nowrap"
+                          >
+                            Page {index + 1}
+                          </TabsTrigger>
+                        ))}
+                      </TabsList>
+                    </div>
+                  </div>
 
                   {survey?.pages.map((page, pageIndex) => (
                     <TabsContent key={page.id} value={pageIndex.toString()}>
                       <div className="space-y-6">
                         <div className="flex justify-between items-center">
                           <h3 className="font-medium text-gray-800">
-                            Page {pageIndex + 1}
+                            Page {pageIndex + 1} of {survey.pages.length}
                           </h3>
                           <Button
                             onClick={() => deletePage(pageIndex)}
@@ -558,8 +562,8 @@ export default function SurveyBuilder({
                               transition={{ duration: 0.2 }}
                             >
                               <Card className="shadow-sm border border-gray-200 hover:border-gray-300 transition-colors">
-                                <CardHeader className="pb-2 pt-3 px-4">
-                                  <div className="flex justify-between items-center">
+                                <CardHeader className="pb-2 pt-2 px-3 sm:px-4">
+                                  <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center">
                                     <RadioGroup
                                       value={question.type}
                                       onValueChange={(value) =>
@@ -570,32 +574,30 @@ export default function SurveyBuilder({
                                           value
                                         )
                                       }
-                                      className="flex space-x-2"
+                                      className="grid grid-cols-2 gap-2 sm:flex sm:gap-2"
                                     >
                                       {questionTypes.map((type) => {
                                         const Icon = type.icon;
                                         return (
-                                          <div key={type.value}>
-                                            <Label
-                                              htmlFor={`type-${type.value}`}
-                                              className={cn(
-                                                "flex items-center justify-center h-8 px-3 rounded-md border text-sm cursor-pointer transition-all",
-                                                question.type === type.value
-                                                  ? "border-primary bg-primary/5 text-primary font-medium"
-                                                  : "border-gray-200 hover:bg-gray-50"
-                                              )}
-                                            >
-                                              <RadioGroupItem
-                                                id={`type-${type.value}`}
-                                                value={type.value}
-                                                className="sr-only"
-                                              />
-                                              <Icon className="mr-1 h-3 w-3" />
-                                              <span className="text-xs">
-                                                {type.label}
-                                              </span>
-                                            </Label>
-                                          </div>
+                                          <Label
+                                            key={type.value}
+                                            htmlFor={`question-${question.id}-type-${type.value}`}
+                                            className={cn(
+                                              "flex items-center justify-center h-9 px-2 rounded-md border text-xs cursor-pointer transition-all",
+                                              question.type === type.value
+                                                ? "border-primary bg-primary/5 text-primary font-medium"
+                                                : "border-gray-200 hover:bg-gray-50",
+                                              "sm:h-8 sm:px-3 sm:text-sm"
+                                            )}
+                                          >
+                                            <RadioGroupItem
+                                              id={`question-${question.id}-type-${type.value}`}
+                                              value={type.value}
+                                              className="sr-only"
+                                            />
+                                            <Icon className="mr-1 h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                                            <span>{type.label}</span>
+                                          </Label>
                                         );
                                       })}
                                     </RadioGroup>
@@ -607,9 +609,9 @@ export default function SurveyBuilder({
                                       size="sm"
                                       variant="ghost"
                                       disabled={page.questions.length <= 1}
-                                      className="h-8 hover:bg-red-50 hover:text-red-600"
+                                      className="self-end h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600 sm:self-center sm:h-9 sm:w-9"
                                     >
-                                      <Trash2 className="h-4 w-4" />
+                                      <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
                                     </Button>
                                   </div>
                                 </CardHeader>
@@ -863,210 +865,213 @@ export default function SurveyBuilder({
           </div>
 
           {/* Right Column - Browser Preview - Fixed position */}
-          <div className="relative lg:h-screen">
-            <div className="lg:sticky lg:w-full h-screen pb-10">
-              <div className="h-full border border-gray-300 rounded-lg shadow-lg overflow-hidden flex flex-col">
-                {/* Browser Chrome UI */}
-                <div className="bg-gray-200 border-b border-gray-300 p-2 flex flex-col flex-shrink-0">
-                  {/* Browser Controls */}
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-1.5 ml-1">
-                      <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                      <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+          <div className="group hidden flex-1 flex-shrink-0 items-center justify-center overflow-hidden border-l border-slate-200 pl-2 md:flex md:flex-col">
+            <div className="flex h-full w-full flex-col items-center justify-items-center">
+              <div className="lg:sticky lg:w-full h-screen pb-10">
+                <div className="h-full border border-gray-300 rounded-lg shadow-lg overflow-hidden flex flex-col">
+                  {/* Browser Chrome UI */}
+                  <div className="bg-gray-200 border-b border-gray-300 p-2 flex flex-col flex-shrink-0">
+                    {/* Browser Controls */}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-1.5 ml-1">
+                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                      </div>
+                      <div className="flex items-center space-x-2 text-gray-500">
+                        <button className="p-1 hover:bg-gray-300 rounded">
+                          <svg
+                            className="w-3 h-3"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path d="M10 6a2 2 0 100-4 2 2 0 000 4zM10 12a2 2 0 100-4 2 2 0 000 4zM10 18a2 2 0 100-4 2 2 0 000 4z"></path>
+                          </svg>
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-2 text-gray-500">
-                      <button className="p-1 hover:bg-gray-300 rounded">
+
+                    {/* URL Bar */}
+                    <div className="flex items-center bg-white rounded-md border border-gray-300 px-3 py-1.5">
+                      <div className="flex items-center text-gray-500 mr-2">
                         <svg
-                          className="w-3 h-3"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
                         >
-                          <path d="M10 6a2 2 0 100-4 2 2 0 000 4zM10 12a2 2 0 100-4 2 2 0 000 4zM10 18a2 2 0 100-4 2 2 0 000 4z"></path>
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"
+                          ></path>
                         </svg>
-                      </button>
+                      </div>
+                      <div className="flex-1 text-sm text-gray-600 truncate">
+                        {survey.title
+                          ? `survey-app.com/${survey.title.toLowerCase().replace(/\s+/g, "-")}`
+                          : "survey-app.com/untitled-survey"}
+                      </div>
                     </div>
                   </div>
 
-                  {/* URL Bar */}
-                  <div className="flex items-center bg-white rounded-md border border-gray-300 px-3 py-1.5">
-                    <div className="flex items-center text-gray-500 mr-2">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"
-                        ></path>
-                      </svg>
-                    </div>
-                    <div className="flex-1 text-sm text-gray-600 truncate">
-                      {survey.title
-                        ? `survey-app.com/${survey.title.toLowerCase().replace(/\s+/g, "-")}`
-                        : "survey-app.com/untitled-survey"}
-                    </div>
-                  </div>
-                </div>
+                  {/* Browser Content - Scrollable */}
+                  <div className="bg-gray-100 flex-1 overflow-y-auto p-4">
+                    <div className="bg-white rounded-lg shadow-sm p-6 max-w-3xl mx-auto my-4">
+                      <AnimatePresence mode="wait" initial={false}>
+                        <motion.div
+                          key={activePageIndex}
+                          variants={cardVariants}
+                          initial="hidden"
+                          animate="visible"
+                          exit="exit"
+                          className="space-y-6"
+                        >
+                          {/* Survey Title + Description */}
+                          <div className="space-y-3">
+                            <h2 className="text-xl font-bold text-gray-900">
+                              {survey.title || "Untitled Survey"}
+                            </h2>
+                            {survey.description && (
+                              <p className="text-gray-600 text-sm">
+                                {survey.description}
+                              </p>
+                            )}
+                          </div>
 
-                {/* Browser Content - Scrollable */}
-                <div className="bg-gray-100 flex-1 overflow-y-auto p-4">
-                  <div className="bg-white rounded-lg shadow-sm p-6 max-w-3xl mx-auto my-4">
-                    <AnimatePresence mode="wait" initial={false}>
-                      <motion.div
-                        key={activePageIndex}
-                        variants={cardVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
-                        className="space-y-6"
-                      >
-                        {/* Survey Title + Description */}
-                        <div className="space-y-3">
-                          <h2 className="text-xl font-bold text-gray-900">
-                            {survey.title || "Untitled Survey"}
-                          </h2>
-                          {survey.description && (
-                            <p className="text-gray-600 text-sm">
-                              {survey.description}
-                            </p>
-                          )}
-                        </div>
+                          <Separator className="bg-gray-200" />
 
-                        <Separator className="bg-gray-200" />
+                          {/* Questions */}
+                          <div className="space-y-4">
+                            {survey?.pages[activePageIndex]?.questions.map(
+                              (question, index) => (
+                                <motion.div
+                                  key={question.id}
+                                  custom={index}
+                                  variants={questionCardVariants}
+                                  initial="hidden"
+                                  animate="visible"
+                                  exit="exit"
+                                  className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+                                >
+                                  <div className="flex items-start gap-1">
+                                    <h3 className="text-base font-medium text-gray-800">
+                                      {question.title ||
+                                        `Question ${index + 1}`}
+                                    </h3>
+                                    {question.required && (
+                                      <span className="text-red-500 text-xs">
+                                        *
+                                      </span>
+                                    )}
+                                  </div>
 
-                        {/* Questions */}
-                        <div className="space-y-4">
-                          {survey?.pages[activePageIndex]?.questions.map(
-                            (question, index) => (
-                              <motion.div
-                                key={question.id}
-                                custom={index}
-                                variants={questionCardVariants}
-                                initial="hidden"
-                                animate="visible"
-                                exit="exit"
-                                className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
-                              >
-                                <div className="flex items-start gap-1">
-                                  <h3 className="text-base font-medium text-gray-800">
-                                    {question.title || `Question ${index + 1}`}
-                                  </h3>
-                                  {question.required && (
-                                    <span className="text-red-500 text-xs">
-                                      *
-                                    </span>
-                                  )}
-                                </div>
-
-                                {question.description && (
-                                  <p className="text-sm text-gray-500 mt-1">
-                                    {question.description}
-                                  </p>
-                                )}
-
-                                <div className="pt-2">
-                                  {question.type === "text" && (
-                                    <Input
-                                      placeholder={
-                                        question.placeholder ||
-                                        "Your answer here..."
-                                      }
-                                      disabled
-                                      className="bg-gray-50"
-                                    />
+                                  {question.description && (
+                                    <p className="text-sm text-gray-500 mt-1">
+                                      {question.description}
+                                    </p>
                                   )}
 
-                                  {question.type === "multiChoice" && (
-                                    <div className="space-y-2 pl-1">
-                                      {(question.options || []).length > 0 ? (
-                                        question?.options?.map(
-                                          (option, idx) => (
-                                            <label
-                                              key={idx}
-                                              className="flex items-center gap-2 text-gray-700"
-                                            >
-                                              <input
-                                                type="radio"
-                                                disabled
-                                                className="h-4 w-4"
-                                              />
-                                              <span>{option}</span>
-                                            </label>
+                                  <div className="pt-2">
+                                    {question.type === "text" && (
+                                      <Input
+                                        placeholder={
+                                          question.placeholder ||
+                                          "Your answer here..."
+                                        }
+                                        disabled
+                                        className="bg-gray-50"
+                                      />
+                                    )}
+
+                                    {question.type === "multiChoice" && (
+                                      <div className="space-y-2 pl-1">
+                                        {(question.options || []).length > 0 ? (
+                                          question?.options?.map(
+                                            (option, idx) => (
+                                              <label
+                                                key={idx}
+                                                className="flex items-center gap-2 text-gray-700"
+                                              >
+                                                <input
+                                                  type="radio"
+                                                  disabled
+                                                  className="h-4 w-4"
+                                                />
+                                                <span>{option}</span>
+                                              </label>
+                                            )
                                           )
-                                        )
-                                      ) : (
-                                        <p className="text-gray-400 italic text-sm">
-                                          No options added
-                                        </p>
-                                      )}
-                                    </div>
-                                  )}
+                                        ) : (
+                                          <p className="text-gray-400 italic text-sm">
+                                            No options added
+                                          </p>
+                                        )}
+                                      </div>
+                                    )}
 
-                                  {question.type === "rating" && (
-                                    <div className="flex gap-2">
-                                      {Array.from({
-                                        length: parseInt(
-                                          question.placeholder || "5"
-                                        ),
-                                      }).map((_, i) => (
-                                        <div
-                                          key={i}
-                                          className="h-8 w-8 rounded border border-gray-300 flex items-center justify-center text-sm"
-                                        >
-                                          {i + 1}
-                                        </div>
-                                      ))}
-                                    </div>
-                                  )}
+                                    {question.type === "rating" && (
+                                      <div className="flex gap-2">
+                                        {Array.from({
+                                          length: parseInt(
+                                            question.placeholder || "5"
+                                          ),
+                                        }).map((_, i) => (
+                                          <div
+                                            key={i}
+                                            className="h-8 w-8 rounded border border-gray-300 flex items-center justify-center text-sm"
+                                          >
+                                            {i + 1}
+                                          </div>
+                                        ))}
+                                      </div>
+                                    )}
 
-                                  {question.type === "link" && (
-                                    <Input
-                                      placeholder="https://example.com"
-                                      disabled
-                                      className="bg-gray-50"
-                                    />
-                                  )}
-                                </div>
-                              </motion.div>
-                            )
-                          )}
-                        </div>
+                                    {question.type === "link" && (
+                                      <Input
+                                        placeholder="https://example.com"
+                                        disabled
+                                        className="bg-gray-50"
+                                      />
+                                    )}
+                                  </div>
+                                </motion.div>
+                              )
+                            )}
+                          </div>
 
-                        {/* Navigation buttons */}
-                        <div className="flex justify-between pt-4">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            disabled={activePageIndex === 0}
-                            className="text-sm"
-                          >
-                            Previous
-                          </Button>
-                          <Button
-                            variant="default"
-                            size="sm"
-                            className="text-sm"
-                          >
-                            {activePageIndex < survey?.pages?.length - 1
-                              ? "Next"
-                              : "Submit"}
-                          </Button>
-                        </div>
-                      </motion.div>
-                    </AnimatePresence>
+                          {/* Navigation buttons */}
+                          <div className="flex justify-between pt-4">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              disabled={activePageIndex === 0}
+                              className="text-sm"
+                            >
+                              Previous
+                            </Button>
+                            <Button
+                              variant="default"
+                              size="sm"
+                              className="text-sm"
+                            >
+                              {activePageIndex < survey?.pages?.length - 1
+                                ? "Next"
+                                : "Submit"}
+                            </Button>
+                          </div>
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
                   </div>
-                </div>
 
-                {/* Browser Status Bar */}
-                <div className="bg-gray-200 border-t border-gray-300 px-3 py-1 text-xs text-gray-500 flex justify-between flex-shrink-0">
-                  <div>Preview Mode</div>
-                  <div>
-                    Page {activePageIndex + 1} of {survey?.pages?.length || 1}
+                  {/* Browser Status Bar */}
+                  <div className="bg-gray-200 border-t border-gray-300 px-3 py-1 text-xs text-gray-500 flex justify-between flex-shrink-0">
+                    <div>Preview Mode</div>
+                    <div>
+                      Page {activePageIndex + 1} of {survey?.pages?.length || 1}
+                    </div>
                   </div>
                 </div>
               </div>
