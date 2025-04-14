@@ -59,8 +59,8 @@ export default function SurveyBuilder({
   return (
     <div className="mx-4 py-4 px-0 md:px-2">
       <Toolbar surveyId={survey.id} />
-      <div className="relative flex gap-2 h-screen overflow-hidden">
-        <div className="w-full md:w-1/2 overflow-y-auto bg-slate-50">
+      <div className="relative z-0 flex flex-1 gap-2 max-h-screen">
+        <div className="relative flex flex-col gap-4 z-0 w-1/2 flex-1 overflow-y-auto bg-slate-50 focus:outline-none">
           <SurveyMetadataEditor />
           <PageManager />
         </div>

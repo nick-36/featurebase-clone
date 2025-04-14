@@ -12,7 +12,7 @@ interface Props {
 }
 
 const QuestionMultiChoice = ({ id, value, choices, onChange }: Props) => {
-  const [mode, _] = useState<"single" | "multiple">("single");
+  const [mode, _] = useState<"single" | "multiple">("multiple");
   const [selected, setSelected] = useState<string[]>([]);
 
   useEffect(() => {

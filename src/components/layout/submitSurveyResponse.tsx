@@ -3,8 +3,13 @@ import { ArrowRight, ArrowLeft, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import type { SurveyPage, SurveyResponse } from "@/types/survey";
+import { QuestionInput } from "@/components/questions/questionInput";
+import type {
+  SurveyPage,
+  SurveyResponse,
+  QuestionChoice,
+  QuestionType,
+} from "@/types/survey";
 
 import {
   saveSurveyResponses,
@@ -40,23 +45,13 @@ export default function SurveySubmission({ survey }: { survey: SurveyV2 }) {
     }
   };
 
-  // Handle input changes
-  const handleInputChange = (questionId: string, value: string | string[]) => {
+  const handleInputChange = (questionId: string, value: string) => {
     setAnswers((prev) => ({
       ...prev,
       [questionId]: value,
     }));
   };
 
-  // Handle radio selection for multiple choice
-  const handleRadioChange = (questionId: string, value: string) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [questionId]: value,
-    }));
-  };
-
-  // Check if current page has required questions that are not answered
   const canProceed = () => {
     const currentPage = parsedPages[activePageIndex];
     if (!currentPage || !currentPage.questions) return false;
@@ -70,17 +65,14 @@ export default function SurveySubmission({ survey }: { survey: SurveyV2 }) {
     );
   };
 
-  // Handle survey submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (activePageIndex < parsedPages.length - 1) {
-      // Navigate to next page
       navigatePreview("next");
       return;
     }
 
-    // Last page: submit the survey
     setIsSubmitting(true);
     setError(null);
 
@@ -101,7 +93,6 @@ export default function SurveySubmission({ survey }: { survey: SurveyV2 }) {
     }
   };
 
-  // If the form has been successfully submitted
   if (submitted) {
     return (
       <div className="container mx-auto py-12 px-4">
@@ -135,117 +126,49 @@ export default function SurveySubmission({ survey }: { survey: SurveyV2 }) {
 
             <Separator />
 
-            {/* Display the active page questions */}
             <div className="space-y-8">
-              {parsedPages[activePageIndex]?.questions?.map((question) => (
-                <div key={question.id} className="space-y-2">
-                  <div className="flex items-start gap-1">
-                    <h3 className="text-lg font-medium">{question.title}</h3>
-                    {question.required && (
-                      <span className="text-red-500">*</span>
+              {parsedPages[activePageIndex]?.questions?.map((question) => {
+                const choices: QuestionChoice[] = (question.options || []).map(
+                  (opt, idx) => ({ id: `${idx}`, value: opt, label: opt })
+                );
+                const isInvalid =
+                  question.required &&
+                  (answers[question.id] === undefined ||
+                    answers[question.id] === "");
+
+                return (
+                  <div key={question.id} className="space-y-2">
+                    <QuestionInput
+                      id={question.id}
+                      label={question.title}
+                      type={question.type as QuestionType}
+                      value={(answers[question.id] as string) || ""}
+                      placeholder={question.placeholder}
+                      required={question.required}
+                      choices={choices}
+                      ratingScale={
+                        question.placeholder
+                          ? parseInt(question.placeholder)
+                          : 5
+                      }
+                      onChange={(value) => {
+                        console.log(value, "VALUE");
+                        handleInputChange(question.id, value);
+                      }}
+                      isInvalid={isInvalid}
+                      className="space-y-2"
+                    />
+                    {question.description && (
+                      <p className="text-gray-600 text-sm">
+                        {question.description}
+                      </p>
                     )}
                   </div>
-
-                  {question.description && (
-                    <p className="text-gray-600 text-sm">
-                      {question.description}
-                    </p>
-                  )}
-
-                  {/* Different input types based on question type */}
-                  {question.type === "text" && (
-                    <Input
-                      name={`question_${question.id}`}
-                      placeholder={question.placeholder}
-                      value={(answers[question.id] as string) || ""}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handleInputChange(question.id, e.target.value)
-                      }
-                      required={question.required}
-                    />
-                  )}
-
-                  {question.type === "multiChoice" && (
-                    <div className="space-y-2">
-                      {question.options?.map((option, optionIndex) => (
-                        <div
-                          key={optionIndex}
-                          className="flex items-center gap-2"
-                        >
-                          <input
-                            type="radio"
-                            id={`option_${question.id}_${optionIndex}`}
-                            name={`question_${question.id}`}
-                            value={option}
-                            checked={
-                              (answers[question.id] as string) === option
-                            }
-                            onChange={() =>
-                              handleRadioChange(question.id, option)
-                            }
-                            required={question.required && optionIndex === 0}
-                          />
-                          <label
-                            htmlFor={`option_${question.id}_${optionIndex}`}
-                          >
-                            {option}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {question.type === "rating" && (
-                    <div className="flex gap-2">
-                      {Array.from({
-                        length: parseInt(question.placeholder || "5"),
-                      }).map((_, i) => (
-                        <Button
-                          key={i}
-                          type="button"
-                          variant={
-                            (answers[question.id] as string) ===
-                            (i + 1).toString()
-                              ? "default"
-                              : "outline"
-                          }
-                          size="sm"
-                          className="h-10 w-10"
-                          onClick={() =>
-                            handleInputChange(question.id, (i + 1).toString())
-                          }
-                        >
-                          {i + 1}
-                        </Button>
-                      ))}
-                      <Input
-                        type="hidden"
-                        name={`question_${question.id}`}
-                        value={(answers[question.id] as string) || ""}
-                        required={question.required}
-                      />
-                    </div>
-                  )}
-
-                  {question.type === "link" && (
-                    <Input
-                      name={`question_${question.id}`}
-                      placeholder="https://example.com"
-                      type="url"
-                      value={(answers[question.id] as string) || ""}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handleInputChange(question.id, e.target.value)
-                      }
-                      required={question.required}
-                    />
-                  )}
-                </div>
-              )) || <p>No questions available for this page.</p>}
+                );
+              }) || <p>No questions available for this page.</p>}
             </div>
 
-            {/* Navigation buttons */}
             <div className="pt-4 flex justify-between items-center">
-              {/* Back button */}
               {activePageIndex > 0 ? (
                 <Button
                   type="button"
@@ -258,7 +181,6 @@ export default function SurveySubmission({ survey }: { survey: SurveyV2 }) {
                 <div></div>
               )}
 
-              {/* Next/Submit button */}
               <Button type="submit" disabled={!canProceed() || isSubmitting}>
                 {activePageIndex < parsedPages.length - 1 ? (
                   <>
@@ -272,7 +194,6 @@ export default function SurveySubmission({ survey }: { survey: SurveyV2 }) {
               </Button>
             </div>
 
-            {/* Error message */}
             {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
           </div>
         </Card>

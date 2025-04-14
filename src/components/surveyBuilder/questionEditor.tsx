@@ -71,13 +71,13 @@ export function QuestionEditor({
     >
       <Card className="shadow-sm border border-gray-200 hover:border-gray-300 transition-colors overflow-y-auto">
         <CardHeader className="pb-2 pt-2 px-3 sm:px-4">
-          <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center overflow-visible">
+          <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center">
             <RadioGroup
               value={question.type}
               onValueChange={(value) =>
                 updateQuestion(pageIndex, questionIndex, "type", value)
               }
-              className="grid grid-cols-2 gap-2 sm:flex sm:gap-2 h-auto"
+              className="grid grid-cols-2 gap-2 sm:flex sm:gap-2"
             >
               {questionTypes.map((type) => {
                 const Icon = type.icon;
