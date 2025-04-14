@@ -60,7 +60,7 @@ export default function SurveyBuilder({
     <div className="mx-4 py-4 px-0 md:px-2">
       <Toolbar surveyId={survey.id} />
       <div className="relative flex gap-2 h-screen overflow-hidden">
-        <div className="w-1/2 overflow-y-auto bg-slate-50">
+        <div className="w-full md:w-1/2 overflow-y-auto bg-slate-50">
           <SurveyMetadataEditor />
           <PageManager />
         </div>
