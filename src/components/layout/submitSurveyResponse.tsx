@@ -4,36 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
+import type { SurveyPage, SurveyResponse } from "@/types/survey";
 
 import {
   saveSurveyResponses,
   trackUniqueFormVisit,
 } from "@/services/surveyServiceV2";
-
-// Types
-type QuestionType = "text" | "multiChoice" | "rating" | "link";
-type NextAction = "nextPage" | "endSurvey";
-
-interface Question {
-  id: string;
-  type: QuestionType;
-  title: string;
-  description: string;
-  placeholder?: string;
-  required: boolean;
-  options?: string[];
-  nextAction: NextAction;
-}
-
-interface SurveyPage {
-  id: string;
-  questions: Question[];
-}
-
-interface SurveyResponse {
-  questionId: string;
-  answer: string | string[];
-}
 
 export default function SurveySubmission({ survey }: { survey: SurveyV2 }) {
   const { share_url } = survey;

@@ -1,32 +1,10 @@
-// types.ts
-export interface Question {
-  id: string;
-  type: string;
-  title: string;
-  description: string;
-  placeholder: string;
-  required: boolean;
-  nextAction: string;
-  options?: string[];
-}
-
-export interface SurveyPage {
-  id: string;
-  questions: Question[];
-}
-
-export interface BaseSurvey {
-  id?: string;
-  title: string;
-  description: string | null;
-  is_published?: boolean;
-}
-
-export interface SurveyParsed extends BaseSurvey {
-  pages: SurveyPage[];
-}
-
-type DeviceView = "desktop" | "tablet" | "mobile";
+import type {
+  Question,
+  SurveyParsed,
+  DeviceView,
+  BaseSurvey,
+  SurveyPage,
+} from "@/types/survey";
 
 // surveyStore.ts
 import { create } from "zustand";
@@ -41,6 +19,7 @@ interface SurveyState {
   setSurvey: (survey: SurveyParsed) => void;
   setActivePageIndex: (index: number) => void;
   setActiveView: (view: "edit" | "preview") => void;
+  setDeviceView: (view: DeviceView) => void;
   updateSurveyMeta: <K extends keyof BaseSurvey>(
     field: K,
     value: BaseSurvey[K]
@@ -98,6 +77,8 @@ export const useSurveyBuilder = create<SurveyState>((set) => ({
   activePageIndex: 0,
   activeView: "edit",
   deviceView: "desktop",
+  setDeviceView: (view: DeviceView) => set({ deviceView: view }),
+
   // Set the entire survey
   setSurvey: (newSurvey) => set({ survey: newSurvey }),
 
