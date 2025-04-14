@@ -1,5 +1,5 @@
 // lib/supabase.ts
-import { BaseSurvey } from "@/stores/surveyBuilderStore";
+import { BaseSurvey } from "@/types/survey";
 import { createClient } from "@supabase/supabase-js";
 
 // Replace these with your actual Supabase URL and anon key

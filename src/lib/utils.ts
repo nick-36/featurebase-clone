@@ -62,3 +62,42 @@ export const sidebarNavLinks = [
     id: "analytics",
   },
 ];
+
+// src/utils/animations.ts
+import { Variants } from "framer-motion";
+
+export const cardVariants: Variants = {
+  hidden: (direction: number) => ({
+    x: direction > 0 ? 300 : -300,
+    opacity: 0,
+    scale: 0.9,
+  }),
+  visible: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+    transition: { type: "spring", stiffness: 300, damping: 30 },
+  },
+  exit: (direction: number) => ({
+    x: direction > 0 ? -300 : 300,
+    opacity: 0,
+    scale: 0.9,
+    transition: { type: "spring", stiffness: 300, damping: 30 },
+  }),
+};
+
+export const questionCardVariants: Variants = {
+  hidden: { opacity: 0, y: 50, scale: 0.95 },
+  visible: (index: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 25,
+      delay: index * 0.15,
+    },
+  }),
+  exit: { opacity: 0, y: -20, scale: 0.95, transition: { duration: 0.2 } },
+};

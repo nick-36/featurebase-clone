@@ -1,6 +1,6 @@
 // src/routes/builder/$surveyId.tsx
 import { createFileRoute, useLoaderData } from "@tanstack/react-router";
-import SurveyBuilder from "@/components/builder/builderV2";
+import SurveyBuilder from "@/components/surveyBuilder/surveyBuilder";
 import { getSurveyToEdit } from "@/services/surveyServiceV2";
 
 const SurveyEditPage = () => {

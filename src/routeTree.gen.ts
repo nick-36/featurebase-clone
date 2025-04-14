@@ -8,254 +8,220 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router'
 
 // Import Routes
 
-import { Route as rootRoute } from "./routes/__root";
-import { Route as IndexImport } from "./routes/index";
-import { Route as BuilderIndexImport } from "./routes/builder/index";
-import { Route as SubmitSurveyUrlImport } from "./routes/submit/$surveyUrl";
-import { Route as DashboardDashboardLayoutImport } from "./routes/dashboard/_dashboardLayout";
-import { Route as BuilderSurveyIdImport } from "./routes/builder/$surveyId";
-import { Route as AuthSignupImport } from "./routes/auth/signup";
-import { Route as AuthLoginImport } from "./routes/auth/login";
-import { Route as SurveysSurveyIdIndexImport } from "./routes/surveys/$surveyId/index";
-import { Route as DashboardDashboardLayoutIndexImport } from "./routes/dashboard/_dashboardLayout.index";
-import { Route as DashboardDashboardLayoutSurveysImport } from "./routes/dashboard/_dashboardLayout.surveys";
-import { Route as DashboardDashboardLayoutAnalyticsImport } from "./routes/dashboard/_dashboardLayout.analytics";
+import { Route as rootRoute } from './routes/__root'
+import { Route as IndexImport } from './routes/index'
+import { Route as SubmitSurveyUrlImport } from './routes/submit/$surveyUrl'
+import { Route as DashboardDashboardLayoutImport } from './routes/dashboard/_dashboardLayout'
+import { Route as BuilderSurveyIdImport } from './routes/builder/$surveyId'
+import { Route as AuthSignupImport } from './routes/auth/signup'
+import { Route as AuthLoginImport } from './routes/auth/login'
+import { Route as SurveysSurveyIdIndexImport } from './routes/surveys/$surveyId/index'
+import { Route as DashboardDashboardLayoutIndexImport } from './routes/dashboard/_dashboardLayout.index'
+import { Route as DashboardDashboardLayoutSurveysImport } from './routes/dashboard/_dashboardLayout.surveys'
+import { Route as DashboardDashboardLayoutAnalyticsImport } from './routes/dashboard/_dashboardLayout.analytics'
 
 // Create Virtual Routes
 
-const DashboardImport = createFileRoute("/dashboard")();
-const NotFoundLazyImport = createFileRoute("/notFound")();
+const DashboardImport = createFileRoute('/dashboard')()
+const NotFoundLazyImport = createFileRoute('/notFound')()
 const SurveysSurveyIdSuccessLazyImport = createFileRoute(
-  "/surveys/$surveyId/success"
-)();
-const SurveysSurveyIdBuilderLazyImport = createFileRoute(
-  "/surveys/$surveyId/builder"
-)();
+  '/surveys/$surveyId/success',
+)()
 
 // Create/Update Routes
 
 const DashboardRoute = DashboardImport.update({
-  id: "/dashboard",
-  path: "/dashboard",
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const NotFoundLazyRoute = NotFoundLazyImport.update({
-  id: "/notFound",
-  path: "/notFound",
+  id: '/notFound',
+  path: '/notFound',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import("./routes/notFound.lazy").then((d) => d.Route));
+} as any).lazy(() => import('./routes/notFound.lazy').then((d) => d.Route))
 
 const IndexRoute = IndexImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRoute,
-} as any);
-
-const BuilderIndexRoute = BuilderIndexImport.update({
-  id: "/builder/",
-  path: "/builder/",
-  getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const SubmitSurveyUrlRoute = SubmitSurveyUrlImport.update({
-  id: "/submit/$surveyUrl",
-  path: "/submit/$surveyUrl",
+  id: '/submit/$surveyUrl',
+  path: '/submit/$surveyUrl',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const DashboardDashboardLayoutRoute = DashboardDashboardLayoutImport.update({
-  id: "/_dashboardLayout",
+  id: '/_dashboardLayout',
   getParentRoute: () => DashboardRoute,
-} as any);
+} as any)
 
 const BuilderSurveyIdRoute = BuilderSurveyIdImport.update({
-  id: "/builder/$surveyId",
-  path: "/builder/$surveyId",
+  id: '/builder/$surveyId',
+  path: '/builder/$surveyId',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const AuthSignupRoute = AuthSignupImport.update({
-  id: "/auth/signup",
-  path: "/auth/signup",
+  id: '/auth/signup',
+  path: '/auth/signup',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const AuthLoginRoute = AuthLoginImport.update({
-  id: "/auth/login",
-  path: "/auth/login",
+  id: '/auth/login',
+  path: '/auth/login',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const SurveysSurveyIdIndexRoute = SurveysSurveyIdIndexImport.update({
-  id: "/surveys/$surveyId/",
-  path: "/surveys/$surveyId/",
+  id: '/surveys/$surveyId/',
+  path: '/surveys/$surveyId/',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const DashboardDashboardLayoutIndexRoute =
   DashboardDashboardLayoutIndexImport.update({
-    id: "/",
-    path: "/",
+    id: '/',
+    path: '/',
     getParentRoute: () => DashboardDashboardLayoutRoute,
-  } as any);
+  } as any)
 
 const SurveysSurveyIdSuccessLazyRoute = SurveysSurveyIdSuccessLazyImport.update(
   {
-    id: "/surveys/$surveyId/success",
-    path: "/surveys/$surveyId/success",
+    id: '/surveys/$surveyId/success',
+    path: '/surveys/$surveyId/success',
     getParentRoute: () => rootRoute,
-  } as any
+  } as any,
 ).lazy(() =>
-  import("./routes/surveys/$surveyId/success.lazy").then((d) => d.Route)
-);
-
-const SurveysSurveyIdBuilderLazyRoute = SurveysSurveyIdBuilderLazyImport.update(
-  {
-    id: "/surveys/$surveyId/builder",
-    path: "/surveys/$surveyId/builder",
-    getParentRoute: () => rootRoute,
-  } as any
-).lazy(() =>
-  import("./routes/surveys/$surveyId/builder.lazy").then((d) => d.Route)
-);
+  import('./routes/surveys/$surveyId/success.lazy').then((d) => d.Route),
+)
 
 const DashboardDashboardLayoutSurveysRoute =
   DashboardDashboardLayoutSurveysImport.update({
-    id: "/surveys",
-    path: "/surveys",
+    id: '/surveys',
+    path: '/surveys',
     getParentRoute: () => DashboardDashboardLayoutRoute,
-  } as any);
+  } as any)
 
 const DashboardDashboardLayoutAnalyticsRoute =
   DashboardDashboardLayoutAnalyticsImport.update({
-    id: "/analytics",
-    path: "/analytics",
+    id: '/analytics',
+    path: '/analytics',
     getParentRoute: () => DashboardDashboardLayoutRoute,
-  } as any);
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/notFound": {
-      id: "/notFound";
-      path: "/notFound";
-      fullPath: "/notFound";
-      preLoaderRoute: typeof NotFoundLazyImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/auth/login": {
-      id: "/auth/login";
-      path: "/auth/login";
-      fullPath: "/auth/login";
-      preLoaderRoute: typeof AuthLoginImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/auth/signup": {
-      id: "/auth/signup";
-      path: "/auth/signup";
-      fullPath: "/auth/signup";
-      preLoaderRoute: typeof AuthSignupImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/builder/$surveyId": {
-      id: "/builder/$surveyId";
-      path: "/builder/$surveyId";
-      fullPath: "/builder/$surveyId";
-      preLoaderRoute: typeof BuilderSurveyIdImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/dashboard": {
-      id: "/dashboard";
-      path: "/dashboard";
-      fullPath: "/dashboard";
-      preLoaderRoute: typeof DashboardImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/dashboard/_dashboardLayout": {
-      id: "/dashboard/_dashboardLayout";
-      path: "/dashboard";
-      fullPath: "/dashboard";
-      preLoaderRoute: typeof DashboardDashboardLayoutImport;
-      parentRoute: typeof DashboardRoute;
-    };
-    "/submit/$surveyUrl": {
-      id: "/submit/$surveyUrl";
-      path: "/submit/$surveyUrl";
-      fullPath: "/submit/$surveyUrl";
-      preLoaderRoute: typeof SubmitSurveyUrlImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/builder/": {
-      id: "/builder/";
-      path: "/builder";
-      fullPath: "/builder";
-      preLoaderRoute: typeof BuilderIndexImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/dashboard/_dashboardLayout/analytics": {
-      id: "/dashboard/_dashboardLayout/analytics";
-      path: "/analytics";
-      fullPath: "/dashboard/analytics";
-      preLoaderRoute: typeof DashboardDashboardLayoutAnalyticsImport;
-      parentRoute: typeof DashboardDashboardLayoutImport;
-    };
-    "/dashboard/_dashboardLayout/surveys": {
-      id: "/dashboard/_dashboardLayout/surveys";
-      path: "/surveys";
-      fullPath: "/dashboard/surveys";
-      preLoaderRoute: typeof DashboardDashboardLayoutSurveysImport;
-      parentRoute: typeof DashboardDashboardLayoutImport;
-    };
-    "/surveys/$surveyId/builder": {
-      id: "/surveys/$surveyId/builder";
-      path: "/surveys/$surveyId/builder";
-      fullPath: "/surveys/$surveyId/builder";
-      preLoaderRoute: typeof SurveysSurveyIdBuilderLazyImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/surveys/$surveyId/success": {
-      id: "/surveys/$surveyId/success";
-      path: "/surveys/$surveyId/success";
-      fullPath: "/surveys/$surveyId/success";
-      preLoaderRoute: typeof SurveysSurveyIdSuccessLazyImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/dashboard/_dashboardLayout/": {
-      id: "/dashboard/_dashboardLayout/";
-      path: "/";
-      fullPath: "/dashboard/";
-      preLoaderRoute: typeof DashboardDashboardLayoutIndexImport;
-      parentRoute: typeof DashboardDashboardLayoutImport;
-    };
-    "/surveys/$surveyId/": {
-      id: "/surveys/$surveyId/";
-      path: "/surveys/$surveyId";
-      fullPath: "/surveys/$surveyId";
-      preLoaderRoute: typeof SurveysSurveyIdIndexImport;
-      parentRoute: typeof rootRoute;
-    };
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/notFound': {
+      id: '/notFound'
+      path: '/notFound'
+      fullPath: '/notFound'
+      preLoaderRoute: typeof NotFoundLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth/signup': {
+      id: '/auth/signup'
+      path: '/auth/signup'
+      fullPath: '/auth/signup'
+      preLoaderRoute: typeof AuthSignupImport
+      parentRoute: typeof rootRoute
+    }
+    '/builder/$surveyId': {
+      id: '/builder/$surveyId'
+      path: '/builder/$surveyId'
+      fullPath: '/builder/$surveyId'
+      preLoaderRoute: typeof BuilderSurveyIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardImport
+      parentRoute: typeof rootRoute
+    }
+    '/dashboard/_dashboardLayout': {
+      id: '/dashboard/_dashboardLayout'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardDashboardLayoutImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/submit/$surveyUrl': {
+      id: '/submit/$surveyUrl'
+      path: '/submit/$surveyUrl'
+      fullPath: '/submit/$surveyUrl'
+      preLoaderRoute: typeof SubmitSurveyUrlImport
+      parentRoute: typeof rootRoute
+    }
+    '/dashboard/_dashboardLayout/analytics': {
+      id: '/dashboard/_dashboardLayout/analytics'
+      path: '/analytics'
+      fullPath: '/dashboard/analytics'
+      preLoaderRoute: typeof DashboardDashboardLayoutAnalyticsImport
+      parentRoute: typeof DashboardDashboardLayoutImport
+    }
+    '/dashboard/_dashboardLayout/surveys': {
+      id: '/dashboard/_dashboardLayout/surveys'
+      path: '/surveys'
+      fullPath: '/dashboard/surveys'
+      preLoaderRoute: typeof DashboardDashboardLayoutSurveysImport
+      parentRoute: typeof DashboardDashboardLayoutImport
+    }
+    '/surveys/$surveyId/success': {
+      id: '/surveys/$surveyId/success'
+      path: '/surveys/$surveyId/success'
+      fullPath: '/surveys/$surveyId/success'
+      preLoaderRoute: typeof SurveysSurveyIdSuccessLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/dashboard/_dashboardLayout/': {
+      id: '/dashboard/_dashboardLayout/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardDashboardLayoutIndexImport
+      parentRoute: typeof DashboardDashboardLayoutImport
+    }
+    '/surveys/$surveyId/': {
+      id: '/surveys/$surveyId/'
+      path: '/surveys/$surveyId'
+      fullPath: '/surveys/$surveyId'
+      preLoaderRoute: typeof SurveysSurveyIdIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
 // Create and export the route tree
 
 interface DashboardDashboardLayoutRouteChildren {
-  DashboardDashboardLayoutAnalyticsRoute: typeof DashboardDashboardLayoutAnalyticsRoute;
-  DashboardDashboardLayoutSurveysRoute: typeof DashboardDashboardLayoutSurveysRoute;
-  DashboardDashboardLayoutIndexRoute: typeof DashboardDashboardLayoutIndexRoute;
+  DashboardDashboardLayoutAnalyticsRoute: typeof DashboardDashboardLayoutAnalyticsRoute
+  DashboardDashboardLayoutSurveysRoute: typeof DashboardDashboardLayoutSurveysRoute
+  DashboardDashboardLayoutIndexRoute: typeof DashboardDashboardLayoutIndexRoute
 }
 
 const DashboardDashboardLayoutRouteChildren: DashboardDashboardLayoutRouteChildren =
@@ -264,141 +230,127 @@ const DashboardDashboardLayoutRouteChildren: DashboardDashboardLayoutRouteChildr
       DashboardDashboardLayoutAnalyticsRoute,
     DashboardDashboardLayoutSurveysRoute: DashboardDashboardLayoutSurveysRoute,
     DashboardDashboardLayoutIndexRoute: DashboardDashboardLayoutIndexRoute,
-  };
+  }
 
 const DashboardDashboardLayoutRouteWithChildren =
   DashboardDashboardLayoutRoute._addFileChildren(
-    DashboardDashboardLayoutRouteChildren
-  );
+    DashboardDashboardLayoutRouteChildren,
+  )
 
 interface DashboardRouteChildren {
-  DashboardDashboardLayoutRoute: typeof DashboardDashboardLayoutRouteWithChildren;
+  DashboardDashboardLayoutRoute: typeof DashboardDashboardLayoutRouteWithChildren
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardDashboardLayoutRoute: DashboardDashboardLayoutRouteWithChildren,
-};
+}
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
-  DashboardRouteChildren
-);
+  DashboardRouteChildren,
+)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/notFound": typeof NotFoundLazyRoute;
-  "/auth/login": typeof AuthLoginRoute;
-  "/auth/signup": typeof AuthSignupRoute;
-  "/builder/$surveyId": typeof BuilderSurveyIdRoute;
-  "/dashboard": typeof DashboardDashboardLayoutRouteWithChildren;
-  "/submit/$surveyUrl": typeof SubmitSurveyUrlRoute;
-  "/builder": typeof BuilderIndexRoute;
-  "/dashboard/analytics": typeof DashboardDashboardLayoutAnalyticsRoute;
-  "/dashboard/surveys": typeof DashboardDashboardLayoutSurveysRoute;
-  "/surveys/$surveyId/builder": typeof SurveysSurveyIdBuilderLazyRoute;
-  "/surveys/$surveyId/success": typeof SurveysSurveyIdSuccessLazyRoute;
-  "/dashboard/": typeof DashboardDashboardLayoutIndexRoute;
-  "/surveys/$surveyId": typeof SurveysSurveyIdIndexRoute;
+  '/': typeof IndexRoute
+  '/notFound': typeof NotFoundLazyRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/builder/$surveyId': typeof BuilderSurveyIdRoute
+  '/dashboard': typeof DashboardDashboardLayoutRouteWithChildren
+  '/submit/$surveyUrl': typeof SubmitSurveyUrlRoute
+  '/dashboard/analytics': typeof DashboardDashboardLayoutAnalyticsRoute
+  '/dashboard/surveys': typeof DashboardDashboardLayoutSurveysRoute
+  '/surveys/$surveyId/success': typeof SurveysSurveyIdSuccessLazyRoute
+  '/dashboard/': typeof DashboardDashboardLayoutIndexRoute
+  '/surveys/$surveyId': typeof SurveysSurveyIdIndexRoute
 }
 
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/notFound": typeof NotFoundLazyRoute;
-  "/auth/login": typeof AuthLoginRoute;
-  "/auth/signup": typeof AuthSignupRoute;
-  "/builder/$surveyId": typeof BuilderSurveyIdRoute;
-  "/dashboard": typeof DashboardDashboardLayoutIndexRoute;
-  "/submit/$surveyUrl": typeof SubmitSurveyUrlRoute;
-  "/builder": typeof BuilderIndexRoute;
-  "/dashboard/analytics": typeof DashboardDashboardLayoutAnalyticsRoute;
-  "/dashboard/surveys": typeof DashboardDashboardLayoutSurveysRoute;
-  "/surveys/$surveyId/builder": typeof SurveysSurveyIdBuilderLazyRoute;
-  "/surveys/$surveyId/success": typeof SurveysSurveyIdSuccessLazyRoute;
-  "/surveys/$surveyId": typeof SurveysSurveyIdIndexRoute;
+  '/': typeof IndexRoute
+  '/notFound': typeof NotFoundLazyRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/builder/$surveyId': typeof BuilderSurveyIdRoute
+  '/dashboard': typeof DashboardDashboardLayoutIndexRoute
+  '/submit/$surveyUrl': typeof SubmitSurveyUrlRoute
+  '/dashboard/analytics': typeof DashboardDashboardLayoutAnalyticsRoute
+  '/dashboard/surveys': typeof DashboardDashboardLayoutSurveysRoute
+  '/surveys/$surveyId/success': typeof SurveysSurveyIdSuccessLazyRoute
+  '/surveys/$surveyId': typeof SurveysSurveyIdIndexRoute
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute;
-  "/": typeof IndexRoute;
-  "/notFound": typeof NotFoundLazyRoute;
-  "/auth/login": typeof AuthLoginRoute;
-  "/auth/signup": typeof AuthSignupRoute;
-  "/builder/$surveyId": typeof BuilderSurveyIdRoute;
-  "/dashboard": typeof DashboardRouteWithChildren;
-  "/dashboard/_dashboardLayout": typeof DashboardDashboardLayoutRouteWithChildren;
-  "/submit/$surveyUrl": typeof SubmitSurveyUrlRoute;
-  "/builder/": typeof BuilderIndexRoute;
-  "/dashboard/_dashboardLayout/analytics": typeof DashboardDashboardLayoutAnalyticsRoute;
-  "/dashboard/_dashboardLayout/surveys": typeof DashboardDashboardLayoutSurveysRoute;
-  "/surveys/$surveyId/builder": typeof SurveysSurveyIdBuilderLazyRoute;
-  "/surveys/$surveyId/success": typeof SurveysSurveyIdSuccessLazyRoute;
-  "/dashboard/_dashboardLayout/": typeof DashboardDashboardLayoutIndexRoute;
-  "/surveys/$surveyId/": typeof SurveysSurveyIdIndexRoute;
+  __root__: typeof rootRoute
+  '/': typeof IndexRoute
+  '/notFound': typeof NotFoundLazyRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/builder/$surveyId': typeof BuilderSurveyIdRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard/_dashboardLayout': typeof DashboardDashboardLayoutRouteWithChildren
+  '/submit/$surveyUrl': typeof SubmitSurveyUrlRoute
+  '/dashboard/_dashboardLayout/analytics': typeof DashboardDashboardLayoutAnalyticsRoute
+  '/dashboard/_dashboardLayout/surveys': typeof DashboardDashboardLayoutSurveysRoute
+  '/surveys/$surveyId/success': typeof SurveysSurveyIdSuccessLazyRoute
+  '/dashboard/_dashboardLayout/': typeof DashboardDashboardLayoutIndexRoute
+  '/surveys/$surveyId/': typeof SurveysSurveyIdIndexRoute
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | "/"
-    | "/notFound"
-    | "/auth/login"
-    | "/auth/signup"
-    | "/builder/$surveyId"
-    | "/dashboard"
-    | "/submit/$surveyUrl"
-    | "/builder"
-    | "/dashboard/analytics"
-    | "/dashboard/surveys"
-    | "/surveys/$surveyId/builder"
-    | "/surveys/$surveyId/success"
-    | "/dashboard/"
-    | "/surveys/$surveyId";
-  fileRoutesByTo: FileRoutesByTo;
+    | '/'
+    | '/notFound'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/builder/$surveyId'
+    | '/dashboard'
+    | '/submit/$surveyUrl'
+    | '/dashboard/analytics'
+    | '/dashboard/surveys'
+    | '/surveys/$surveyId/success'
+    | '/dashboard/'
+    | '/surveys/$surveyId'
+  fileRoutesByTo: FileRoutesByTo
   to:
-    | "/"
-    | "/notFound"
-    | "/auth/login"
-    | "/auth/signup"
-    | "/builder/$surveyId"
-    | "/dashboard"
-    | "/submit/$surveyUrl"
-    | "/builder"
-    | "/dashboard/analytics"
-    | "/dashboard/surveys"
-    | "/surveys/$surveyId/builder"
-    | "/surveys/$surveyId/success"
-    | "/surveys/$surveyId";
+    | '/'
+    | '/notFound'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/builder/$surveyId'
+    | '/dashboard'
+    | '/submit/$surveyUrl'
+    | '/dashboard/analytics'
+    | '/dashboard/surveys'
+    | '/surveys/$surveyId/success'
+    | '/surveys/$surveyId'
   id:
-    | "__root__"
-    | "/"
-    | "/notFound"
-    | "/auth/login"
-    | "/auth/signup"
-    | "/builder/$surveyId"
-    | "/dashboard"
-    | "/dashboard/_dashboardLayout"
-    | "/submit/$surveyUrl"
-    | "/builder/"
-    | "/dashboard/_dashboardLayout/analytics"
-    | "/dashboard/_dashboardLayout/surveys"
-    | "/surveys/$surveyId/builder"
-    | "/surveys/$surveyId/success"
-    | "/dashboard/_dashboardLayout/"
-    | "/surveys/$surveyId/";
-  fileRoutesById: FileRoutesById;
+    | '__root__'
+    | '/'
+    | '/notFound'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/builder/$surveyId'
+    | '/dashboard'
+    | '/dashboard/_dashboardLayout'
+    | '/submit/$surveyUrl'
+    | '/dashboard/_dashboardLayout/analytics'
+    | '/dashboard/_dashboardLayout/surveys'
+    | '/surveys/$surveyId/success'
+    | '/dashboard/_dashboardLayout/'
+    | '/surveys/$surveyId/'
+  fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  NotFoundLazyRoute: typeof NotFoundLazyRoute;
-  AuthLoginRoute: typeof AuthLoginRoute;
-  AuthSignupRoute: typeof AuthSignupRoute;
-  BuilderSurveyIdRoute: typeof BuilderSurveyIdRoute;
-  DashboardRoute: typeof DashboardRouteWithChildren;
-  SubmitSurveyUrlRoute: typeof SubmitSurveyUrlRoute;
-  BuilderIndexRoute: typeof BuilderIndexRoute;
-  SurveysSurveyIdBuilderLazyRoute: typeof SurveysSurveyIdBuilderLazyRoute;
-  SurveysSurveyIdSuccessLazyRoute: typeof SurveysSurveyIdSuccessLazyRoute;
-  SurveysSurveyIdIndexRoute: typeof SurveysSurveyIdIndexRoute;
+  IndexRoute: typeof IndexRoute
+  NotFoundLazyRoute: typeof NotFoundLazyRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthSignupRoute: typeof AuthSignupRoute
+  BuilderSurveyIdRoute: typeof BuilderSurveyIdRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
+  SubmitSurveyUrlRoute: typeof SubmitSurveyUrlRoute
+  SurveysSurveyIdSuccessLazyRoute: typeof SurveysSurveyIdSuccessLazyRoute
+  SurveysSurveyIdIndexRoute: typeof SurveysSurveyIdIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -409,15 +361,13 @@ const rootRouteChildren: RootRouteChildren = {
   BuilderSurveyIdRoute: BuilderSurveyIdRoute,
   DashboardRoute: DashboardRouteWithChildren,
   SubmitSurveyUrlRoute: SubmitSurveyUrlRoute,
-  BuilderIndexRoute: BuilderIndexRoute,
-  SurveysSurveyIdBuilderLazyRoute: SurveysSurveyIdBuilderLazyRoute,
   SurveysSurveyIdSuccessLazyRoute: SurveysSurveyIdSuccessLazyRoute,
   SurveysSurveyIdIndexRoute: SurveysSurveyIdIndexRoute,
-};
+}
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
 
 /* ROUTE_MANIFEST_START
 {
@@ -432,8 +382,6 @@ export const routeTree = rootRoute
         "/builder/$surveyId",
         "/dashboard",
         "/submit/$surveyUrl",
-        "/builder/",
-        "/surveys/$surveyId/builder",
         "/surveys/$surveyId/success",
         "/surveys/$surveyId/"
       ]
@@ -471,9 +419,6 @@ export const routeTree = rootRoute
     "/submit/$surveyUrl": {
       "filePath": "submit/$surveyUrl.tsx"
     },
-    "/builder/": {
-      "filePath": "builder/index.tsx"
-    },
     "/dashboard/_dashboardLayout/analytics": {
       "filePath": "dashboard/_dashboardLayout.analytics.tsx",
       "parent": "/dashboard/_dashboardLayout"
@@ -481,9 +426,6 @@ export const routeTree = rootRoute
     "/dashboard/_dashboardLayout/surveys": {
       "filePath": "dashboard/_dashboardLayout.surveys.tsx",
       "parent": "/dashboard/_dashboardLayout"
-    },
-    "/surveys/$surveyId/builder": {
-      "filePath": "surveys/$surveyId/builder.lazy.tsx"
     },
     "/surveys/$surveyId/success": {
       "filePath": "surveys/$surveyId/success.lazy.tsx"
